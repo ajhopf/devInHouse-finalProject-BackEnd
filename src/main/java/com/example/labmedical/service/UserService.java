@@ -1,7 +1,8 @@
 package com.example.labmedical.service;
 
-import com.example.labmedical.controller.dtos.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
+import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +24,7 @@ public class UserService {
         String email = authenticationRequest.getEmail();
         String password = authenticationRequest.getPassword();
 
-        User user = userRepository.findByEmailAndPassword(email, password).orElseThrow(RuntimeException::new);
+        User user = userRepository.findByEmailAndPassword(email, password).orElseThrow(WrongCredentialsException::new);
 
         String token = Jwts.builder()
                 .setSubject(user.getName())

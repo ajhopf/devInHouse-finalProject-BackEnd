@@ -1,4 +1,4 @@
-package com.example.labmedical.controller.dtos;
+package com.example.labmedical.controller.dtos.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

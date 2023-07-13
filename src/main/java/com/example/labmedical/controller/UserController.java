@@ -1,7 +1,8 @@
 package com.example.labmedical.controller;
 
-import com.example.labmedical.controller.dtos.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.AuthenticationResponse;
+
+import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

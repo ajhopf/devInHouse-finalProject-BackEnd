@@ -1,4 +1,4 @@
-package com.example.labmedical.controller.dtos;
+package com.example.labmedical.controller.dtos.request;
 
 import com.example.labmedical.enums.Role;
 import lombok.AllArgsConstructor;

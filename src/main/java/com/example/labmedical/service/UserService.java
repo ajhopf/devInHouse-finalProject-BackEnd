@@ -19,12 +19,14 @@ import java.util.Date;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LogService logService;
 
-    public AuthenticationResponse findUserByEmailAndPassword(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse loginUser(AuthenticationRequest authenticationRequest) {
         String email = authenticationRequest.getEmail();
         String password = authenticationRequest.getPassword();
 
-        User user = userRepository.findByEmailAndPassword(email, password).orElseThrow(WrongCredentialsException::new);
+        User user = this.findUserByEmailAndPassword(email, password);
 
         String token = Jwts.builder()
                 .setSubject(user.getName())
@@ -40,7 +42,16 @@ public class UserService {
                 .token(token)
                 .build();
 
+        String logDescription = "O(a) " + response.getRole() + " " + response.getName() + " efetuou login no sistema.";
+
+        logService.success(logDescription);
+
         return response;
+    }
+
+    public User findUserByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(WrongCredentialsException::new);
     }
 
     private Key getSignInKey() {

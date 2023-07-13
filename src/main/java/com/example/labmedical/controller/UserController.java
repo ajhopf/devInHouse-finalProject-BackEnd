@@ -21,7 +21,7 @@ public class UserController {
     public ResponseEntity<AuthenticationResponse> userLogin(
             @RequestBody @Valid AuthenticationRequest authenticationRequest
             ) {
-        AuthenticationResponse response = userService.findUserByEmailAndPassword(authenticationRequest);
+        AuthenticationResponse response = userService.loginUser(authenticationRequest);
 
         return ResponseEntity.ok(response);
     }

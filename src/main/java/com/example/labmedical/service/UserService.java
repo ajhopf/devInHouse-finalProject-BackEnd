@@ -21,6 +21,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private LogService logService;
+    @Autowired
+    private TokenService tokenService;
 
     public AuthenticationResponse loginUser(AuthenticationRequest authenticationRequest) {
         String email = authenticationRequest.getEmail();
@@ -42,7 +44,9 @@ public class UserService {
                 .token(token)
                 .build();
 
-        String logDescription = "O(a) " + response.getRole() + " " + response.getName() + " efetuou login no sistema.";
+        String logDescription = "O(a) " + response.getRole().toString().substring(5) + " " + response.getName() + " efetuou login no sistema.";
+
+        tokenService.save(token, user);
 
         logService.success(logDescription);
 

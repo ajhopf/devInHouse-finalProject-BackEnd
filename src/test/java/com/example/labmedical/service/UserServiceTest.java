@@ -4,7 +4,10 @@ import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
+import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.enums.Role;
+import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
@@ -22,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceTest {
@@ -103,6 +107,60 @@ class UserServiceTest {
             AuthenticationResponse result = userService.loginUser(request);
             //then
             assertNotNull(result.getToken());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Tests of saveUser methos")
+    class saveUserMethodTest{
+        @Test
+        @DisplayName("When user already exist in database, it should throw RegisterDataAlreadyExist")
+        void test1(){
+            Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+            UserRegisterRequest request = new UserRegisterRequest();
+            request.setEmail("example@example.com");
+            request.setCpf("123.456.789-23");
+            assertThrows(RegisterDataAlreadyExist.class, () -> userService.saveUser(request));
+        }
+
+        @Test
+        @DisplayName("When user not exist in database, it should save user")
+        void test2(){
+            UserRegisterRequest request = UserRegisterRequest.builder()
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .build();
+            Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+            String result = userService.saveUser(request);
+            assertEquals("Usuário criado com sucesso", result);
+        }
+
+        @Test
+        @DisplayName("When user exist in database, it should return true")
+        void test3(){
+            UserRegisterRequest request = new UserRegisterRequest();
+            Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+            request.setEmail("email@example.com");
+            request.setCpf("111.222.333-44");
+            Boolean result = userService.checkIfUserExist(request);
+            assertTrue(result);
+        }
+
+        @Test
+        @DisplayName("When user exist in database, it should return false")
+        void test4(){
+            UserRegisterRequest request = new UserRegisterRequest();
+            Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+            request.setEmail("email@example.com");
+            request.setCpf("111.222.333-44");
+            Boolean result = userService.checkIfUserExist(request);
+            assertFalse(result);
         }
     }
 

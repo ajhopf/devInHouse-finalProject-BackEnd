@@ -3,13 +3,13 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
-import com.example.labmedical.repository.model.Token;
 import com.example.labmedical.repository.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -96,16 +96,23 @@ public class UserService {
     }
 
     public String saveUser(UserRegisterRequest userRegisterRequest) {
+    public String saveUser(UserRegisterRequest request) {
         User user = User.builder()
-                .name(userRegisterRequest.getName())
-                .email(userRegisterRequest.getEmail())
-                .role(userRegisterRequest.getRole())
-                .password(userRegisterRequest.getPassword())
-                .gender(userRegisterRequest.getGender())
-                .cpf(userRegisterRequest.getCpf())
-                .telephone(userRegisterRequest.getTelephone())
+                .name(request.getName())
+                .email(request.getEmail())
+                .role(request.getRole())
+                .password(request.getPassword())
+                .gender(request.getGender())
+                .cpf(request.getCpf())
+                .telephone(request.getTelephone())
                 .build();
         userRepository.save(user);
+        logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
         return "Usuário criado com sucesso";
+    }
+
+    public Boolean checkIfUserExist(UserRegisterRequest request){
+        Boolean register = userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
+        return register;
     }
 }

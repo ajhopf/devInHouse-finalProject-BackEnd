@@ -3,6 +3,8 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.enums.Role;
+import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
@@ -10,11 +12,15 @@ import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
+import com.example.labmedical.repository.model.Token;
 import com.example.labmedical.repository.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
@@ -95,7 +101,6 @@ public class UserService {
         logService.success(logDescription);
     }
 
-    public String saveUser(UserRegisterRequest userRegisterRequest) {
     public String saveUser(UserRegisterRequest request) {
         User user = User.builder()
                 .name(request.getName())
@@ -111,7 +116,7 @@ public class UserService {
         return "Usuário criado com sucesso";
     }
 
-    public Boolean checkIfUserExist(UserRegisterRequest request){
+    public Boolean checkIfUserExist(UserRegisterRequest request) {
         Boolean register = userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
         return register;
     }

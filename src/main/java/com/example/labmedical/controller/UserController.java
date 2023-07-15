@@ -5,6 +5,8 @@ import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.repository.model.User;
+import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.repository.model.User;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
@@ -51,5 +53,4 @@ public class UserController {
         String response = userService.saveUser(userRegisterRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 }

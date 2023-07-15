@@ -3,6 +3,7 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
@@ -12,7 +13,6 @@ import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
-import com.example.labmedical.repository.model.Token;
 import com.example.labmedical.repository.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
+
 
 @Service
 public class UserService {
@@ -102,6 +102,10 @@ public class UserService {
     }
 
     public String saveUser(UserRegisterRequest request) {
+        Boolean userDatabase = this.checkIfUserExist(request);
+        if(userDatabase){
+            throw new RegisterDataAlreadyExist();
+        }
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())

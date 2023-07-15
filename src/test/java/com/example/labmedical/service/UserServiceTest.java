@@ -1,13 +1,15 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
-import com.example.labmedical.controller.dtos.response.UserByEmailResponse;
+import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
 import com.example.labmedical.repository.model.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest
@@ -138,10 +139,50 @@ class UserServiceTest {
                     .thenReturn(Optional.of(user));
 
             //when
-            UserByEmailResponse result = userService.findUserByEmail(email);
+            UserIdByEmailResponse result = userService.findUserByEmail(email);
             //then
             assertEquals(user.getId(), result.getId());
             assertEquals(user.getEmail(), result.getEmail());
+        }
+
+        @Nested
+        @DisplayName("Tests of updateUserPassword method")
+        class updateUserPassword {
+            @Test
+            @DisplayName("When user is not found, it should return EntityNotFoundException with correct message")
+            void test1() {
+                ResetUserPasswordRequest request = ResetUserPasswordRequest.builder().id(1L).build();
+
+                Exception exception = assertThrows(EntityNotFoundException.class,
+                        () -> userService.updateUserPassword(request));
+
+                String expectedMessage = "Usuário não encontrado com id informado";
+                String actualMessage = exception.getMessage();
+
+                assertTrue(actualMessage.contains(expectedMessage));
+            }
+
+            @Test
+            @DisplayName("When user is found, it shouldn't throw an error")
+            void test2() {
+                ResetUserPasswordRequest request = ResetUserPasswordRequest.builder().id(1L).build();
+
+                User user = User.builder()
+                        .id(1L)
+                        .role(Role.ROLE_ADMIN)
+                        .build();
+
+                Mockito.when(userRepository.findById(Mockito.anyLong()))
+                        .thenReturn(Optional.of(user));
+
+                doNothing().when(tokenService).save(Mockito.anyString(), Mockito.any(User.class));
+
+                Log log = Log.builder().build();
+
+                Mockito.when(logService.success(Mockito.anyString())).thenReturn(log);
+
+                assertDoesNotThrow(() -> userService.updateUserPassword(request));
+            }
         }
     }
 }

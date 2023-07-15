@@ -67,6 +67,10 @@ public class UserService {
     }
 
     public String saveUser(UserRegisterRequest request) {
+        Boolean userExist = checkIfUserExist(request);
+        if(userExist){
+            throw new RegisterDataAlreadyExist();
+        }
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -85,4 +89,5 @@ public class UserService {
         Boolean register = userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
         return register;
     }
+
 }

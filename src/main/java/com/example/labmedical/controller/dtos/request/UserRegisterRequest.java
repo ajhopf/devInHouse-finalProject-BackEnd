@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRegisterRequest {
     @NotNull
     @Size(min = 8, max = 64)

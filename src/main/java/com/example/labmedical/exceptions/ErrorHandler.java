@@ -50,4 +50,10 @@ public class ErrorHandler {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(retorno);
     }
+
+    @ExceptionHandler(RegisterDataAlreadyExist.class)
+    public ResponseEntity<String> userExist(RegisterDataAlreadyExist e){
+        logger.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

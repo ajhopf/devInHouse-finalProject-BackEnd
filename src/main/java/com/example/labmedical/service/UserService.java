@@ -1,7 +1,8 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.UserByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
@@ -56,6 +57,16 @@ public class UserService {
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password)
                 .orElseThrow(WrongCredentialsException::new);
+    }
+
+    public UserByEmailResponse findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado"));
+
+        return UserByEmailResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .build();
     }
 
     private Key getSignInKey() {

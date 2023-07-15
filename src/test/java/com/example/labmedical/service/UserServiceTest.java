@@ -1,7 +1,7 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;

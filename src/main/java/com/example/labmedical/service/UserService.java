@@ -1,22 +1,30 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.enums.Role;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
+import com.example.labmedical.repository.model.Token;
 import com.example.labmedical.repository.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -85,5 +93,19 @@ public class UserService {
 
         String logDescription = "O(a) " + user.getRole().toString().substring(5) + " " + user.getName() + " resetou a senha.";
         logService.success(logDescription);
+    }
+
+    public String saveUser(UserRegisterRequest userRegisterRequest) {
+        User user = User.builder()
+                .name(userRegisterRequest.getName())
+                .email(userRegisterRequest.getEmail())
+                .role(userRegisterRequest.getRole())
+                .password(userRegisterRequest.getPassword())
+                .gender(userRegisterRequest.getGender())
+                .cpf(userRegisterRequest.getCpf())
+                .telephone(userRegisterRequest.getTelephone())
+                .build();
+        userRepository.save(user);
+        return "Usuário criado com sucesso";
     }
 }

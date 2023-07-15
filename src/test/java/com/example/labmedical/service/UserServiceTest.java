@@ -2,6 +2,7 @@ package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.UserByEmailResponse;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
@@ -101,6 +102,46 @@ class UserServiceTest {
             AuthenticationResponse result = userService.loginUser(request);
             //then
             assertNotNull(result.getToken());
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of findUserByEmail method")
+    class findUserByEmail {
+        @Test
+        @DisplayName("When user is not found, it should return WrongCredentialsException with correct message")
+        void test1() {
+            Exception exception = assertThrows(WrongCredentialsException.class, () -> userService.findUserByEmail(Mockito.anyString()));
+
+            String expectedMessage = "Email informado não encontrado";
+            String actualMessage = exception.getMessage();
+
+            assertTrue(actualMessage.contains(expectedMessage));
+        }
+
+        @Test
+        @DisplayName("When user is found, it should return UserByEmailResponse with user id and email")
+        void test2() {
+            //given
+            String email = "email";
+
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .email(email)
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .photoUrl("photoUrl")
+                    .build();
+
+            Mockito.when(userRepository.findByEmail(Mockito.anyString()))
+                    .thenReturn(Optional.of(user));
+
+            //when
+            UserByEmailResponse result = userService.findUserByEmail(email);
+            //then
+            assertEquals(user.getId(), result.getId());
+            assertEquals(user.getEmail(), result.getEmail());
         }
     }
 }

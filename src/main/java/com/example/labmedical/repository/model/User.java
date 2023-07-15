@@ -3,6 +3,7 @@ package com.example.labmedical.repository.model;
 import com.example.labmedical.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,9 @@ public class User implements UserDetails {
     private List<Token> tokens;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String gender;
+    private String cpf;
+    private String telephone;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

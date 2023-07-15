@@ -2,8 +2,9 @@ package com.example.labmedical.controller;
 
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
-import com.example.labmedical.controller.dtos.response.UserByEmailResponse;
+import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,17 @@ public class UserController {
     }
 
     @GetMapping("{email}")
-    public ResponseEntity<UserByEmailResponse> getUserByEmail(@PathVariable @Valid String email) {
-        UserByEmailResponse response = userService.findUserByEmail(email);
+    public ResponseEntity<UserIdByEmailResponse> getUserIdByEmail(@PathVariable @Valid String email) {
+        UserIdByEmailResponse response = userService.findUserByEmail(email);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("resetarsenha")
+    public ResponseEntity<Void> resetUserPassword(
+            @RequestBody @Valid ResetUserPasswordRequest resetUserPasswordRequest) {
+        userService.updateUserPassword(resetUserPasswordRequest);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,8 +1,9 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
-import com.example.labmedical.controller.dtos.response.UserByEmailResponse;
+import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,14 +58,14 @@ public class UserService {
 
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(WrongCredentialsException::new);
+                .orElseThrow(() -> new WrongCredentialsException("Email ou senha informados não conferem ou não existem."));
     }
 
-    public UserByEmailResponse findUserByEmail(String email) {
+    public UserIdByEmailResponse findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado"));
+                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado."));
 
-        return UserByEmailResponse.builder()
+        return UserIdByEmailResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .build();
@@ -72,5 +74,16 @@ public class UserService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode("404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public void updateUserPassword(ResetUserPasswordRequest resetUserPasswordRequest) {
+        User user = userRepository.findById(resetUserPasswordRequest.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com id informado"));
+
+        user.setPassword(resetUserPasswordRequest.getPassword());
+        userRepository.save(user);
+
+        String logDescription = "O(a) " + user.getRole().toString().substring(5) + " " + user.getName() + " resetou a senha.";
+        logService.success(logDescription);
     }
 }

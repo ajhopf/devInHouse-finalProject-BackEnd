@@ -1,13 +1,8 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
-import com.example.labmedical.enums.Role;
-import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
-import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
-import com.example.labmedical.enums.Role;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
@@ -18,19 +13,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-
 
 @Service
 public class UserService {
@@ -101,9 +89,10 @@ public class UserService {
         logService.success(logDescription);
     }
 
-    public String saveUser(UserRegisterRequest request) {
-        Boolean userDatabase = this.checkIfUserExist(request);
-        if(userDatabase){
+
+    public User saveUser(UserRegisterRequest request) {
+        Boolean userExist = checkIfUserExist(request);
+        if(userExist){
             throw new RegisterDataAlreadyExist();
         }
         User user = User.builder()
@@ -117,7 +106,7 @@ public class UserService {
                 .build();
         userRepository.save(user);
         logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
-        return "Usuário criado com sucesso";
+        return user;
     }
 
     public Boolean checkIfUserExist(UserRegisterRequest request) {

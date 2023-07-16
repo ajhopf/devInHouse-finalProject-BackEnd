@@ -47,10 +47,10 @@ public class UserController {
     }
 
     @PostMapping("cadastrar")
-    public ResponseEntity<String> userRegister(
+    public ResponseEntity<User> userRegister(
             @RequestBody @Valid UserRegisterRequest userRegisterRequest
     ) {
-        String response = userService.saveUser(userRegisterRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        User User = userService.saveUser(userRegisterRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(User);
     }
 }

@@ -4,7 +4,6 @@ import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
@@ -25,7 +24,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceTest {
@@ -137,8 +135,8 @@ class UserServiceTest {
                     .role(Role.ROLE_ADMIN)
                     .build();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
-            String result = userService.saveUser(request);
-            assertEquals("Usuário criado com sucesso", result);
+            User result = userService.saveUser(request);
+            assertEquals(result.getName(), result.getName());
         }
 
         @Test

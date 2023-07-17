@@ -110,7 +110,6 @@ public class UserService {
     }
 
     public Boolean checkIfUserExist(UserRegisterRequest request) {
-        Boolean register = userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
-        return register;
+       return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 }

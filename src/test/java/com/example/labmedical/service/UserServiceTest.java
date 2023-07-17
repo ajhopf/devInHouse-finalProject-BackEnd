@@ -113,7 +113,7 @@ class UserServiceTest {
     @DisplayName("Tests of saveUser methos")
     class saveUserMethodTest{
         @Test
-        @DisplayName("When user already exist in database, it should throw RegisterDataAlreadyExist")
+        @DisplayName("When user already exists in database, it should throw RegisterDataAlreadyExist")
         void test1(){
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
             UserRegisterRequest request = new UserRegisterRequest();
@@ -123,7 +123,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("When user not exist in database, it should save user")
+        @DisplayName("When user doesn't exists in database, it should save user")
         void test2(){
             UserRegisterRequest request = UserRegisterRequest.builder()
                     .name("André")
@@ -140,7 +140,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("When user exist in database, it should return true")
+        @DisplayName("When user exists in database, it should return true")
         void test3(){
             UserRegisterRequest request = new UserRegisterRequest();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
@@ -151,7 +151,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("When user exist in database, it should return false")
+        @DisplayName("When user exists in database, it should return false")
         void test4(){
             UserRegisterRequest request = new UserRegisterRequest();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);

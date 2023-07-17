@@ -2,9 +2,6 @@ package com.example.labmedical.controller;
 
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
-import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
-import com.example.labmedical.repository.model.User;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.repository.model.User;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;

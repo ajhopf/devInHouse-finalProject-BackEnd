@@ -1,6 +1,8 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
@@ -85,5 +87,29 @@ public class UserService {
 
         String logDescription = "O(a) " + user.getRole().toString().substring(5) + " " + user.getName() + " resetou a senha.";
         logService.success(logDescription);
+    }
+
+
+    public User saveUser(UserRegisterRequest request) {
+        Boolean userExist = checkIfUserExist(request);
+        if(userExist){
+            throw new RegisterDataAlreadyExist();
+        }
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .role(request.getRole())
+                .password(request.getPassword())
+                .gender(request.getGender())
+                .cpf(request.getCpf())
+                .telephone(request.getTelephone())
+                .build();
+        userRepository.save(user);
+        logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
+        return user;
+    }
+
+    public Boolean checkIfUserExist(UserRegisterRequest request) {
+       return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 }

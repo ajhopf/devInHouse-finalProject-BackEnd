@@ -3,6 +3,7 @@ package com.example.labmedical.service;
 import com.example.labmedical.repository.TokenRepository;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
+import com.example.labmedical.service.auth.TokenService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -27,14 +28,14 @@ class TokenServiceTest {
     private TokenRepository tokenRepository;
 
     @Nested
-    @DisplayName("Tests of save method")
+    @DisplayName("Tests of saveUserToken method")
     class saveMethodTests {
         @Test
         @DisplayName("When user is not found, it should return EntityNotFoundException")
         void test1() {
             User user = User.builder().id(1L).build();
 
-            assertThrows(EntityNotFoundException.class, () -> tokenService.save(Mockito.anyString(), user));
+            assertThrows(EntityNotFoundException.class, () -> tokenService.saveUserToken(user, Mockito.anyString()));
         }
 
         @Test
@@ -45,7 +46,7 @@ class TokenServiceTest {
             Mockito.when(userRepository.findById(Mockito.anyLong()))
                     .thenReturn(Optional.of(user));
 
-            assertDoesNotThrow(() -> tokenService.save(Mockito.anyString(), user));
+            assertDoesNotThrow(() -> tokenService.saveUserToken(user, Mockito.anyString()));
         }
     }
 

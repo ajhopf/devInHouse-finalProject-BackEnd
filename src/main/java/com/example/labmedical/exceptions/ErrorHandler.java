@@ -22,7 +22,8 @@ public class ErrorHandler {
     private LogService logger;
     @ExceptionHandler(WrongCredentialsException.class)
     public ResponseEntity<String> wrongCredentials(WrongCredentialsException e) {
-        logger.error("Credenciais inválidas: " + e.getMessage());
+//        logger.error("Credenciais inválidas: " + e.getMessage());
+        logger.error(e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());

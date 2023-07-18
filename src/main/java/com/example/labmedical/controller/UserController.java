@@ -59,4 +59,12 @@ public class UserController {
         List<UserListResponse> response = userService.getListUsers();
         return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("atualizar/{id}")
+    public ResponseEntity<String> userUpdate(
+           @Valid @PathVariable Long id, @RequestBody UserRegisterRequest request
+    ){
+        String response = userService.updateUser(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

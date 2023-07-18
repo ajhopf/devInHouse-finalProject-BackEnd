@@ -1,12 +1,14 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.enums.Role;
-import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
+import com.example.labmedical.exceptions.EmptyUserListException;
+import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
@@ -20,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -111,7 +113,7 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("Tests of saveUser methos")
+    @DisplayName("Tests of saveUser method")
     class saveUserMethodTest{
         @Test
         @DisplayName("When user already exists in database, it should throw RegisterDataAlreadyExist")
@@ -120,7 +122,7 @@ class UserServiceTest {
             UserRegisterRequest request = new UserRegisterRequest();
             request.setEmail("example@example.com");
             request.setCpf("123.456.789-23");
-            assertThrows(RegisterDataAlreadyExist.class, () -> userService.saveUser(request));
+            assertThrows(RegisterAlreadyExistExcepetion.class, () -> userService.saveUser(request));
         }
 
         @Test
@@ -240,6 +242,34 @@ class UserServiceTest {
 
                 assertDoesNotThrow(() -> userService.updateUserPassword(request));
             }
+        }
+    }
+    @Nested
+    @DisplayName("Test get user's list method")
+    class finUserListMethodTest{
+        @Test
+        @DisplayName("When list is empty, it should return empty exception")
+        void test1(){
+            Mockito.when(userRepository.findAll()).thenReturn(new ArrayList<>());
+            assertThrows(EmptyUserListException.class, () -> userService.getListUsers());
+        }
+
+        @Test
+        @DisplayName("When list not empty, shoul return a list")
+        void test2(){
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            List<User> list = new ArrayList<>();
+            list.add(user);
+            Mockito.when(userRepository.findAll()).thenReturn(list);
+            List<UserListResponse> response = userService.getListUsers();
+            assertTrue(response.size() > 0);
+            assertEquals(user.getName(), response.get(0).getName());
         }
     }
 }

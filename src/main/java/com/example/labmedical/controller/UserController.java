@@ -2,6 +2,7 @@ package com.example.labmedical.controller;
 
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.repository.model.User;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios/")
@@ -49,5 +52,11 @@ public class UserController {
     ) {
         User User = userService.saveUser(userRegisterRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(User);
+    }
+
+    @GetMapping("listar")
+    public ResponseEntity<List<UserListResponse>> userGetList(){
+        List<UserListResponse> response = userService.getListUsers();
+        return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

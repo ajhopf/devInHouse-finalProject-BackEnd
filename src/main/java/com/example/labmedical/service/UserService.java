@@ -1,11 +1,13 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
+import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
-import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
+import com.example.labmedical.exceptions.EmptyUserListException;
+import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -93,7 +97,7 @@ public class UserService {
     public User saveUser(UserRegisterRequest request) {
         Boolean userExist = checkIfUserExist(request);
         if(userExist){
-            throw new RegisterDataAlreadyExist();
+            throw new RegisterAlreadyExistExcepetion();
         }
         User user = User.builder()
                 .name(request.getName())
@@ -111,5 +115,22 @@ public class UserService {
 
     public Boolean checkIfUserExist(UserRegisterRequest request) {
        return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
+    }
+
+    public List<UserListResponse> getListUsers() {
+        List<User> users = userRepository.findAll();
+        if(users.size() == 0){
+            throw new EmptyUserListException();
+        }
+        List<UserListResponse> usersListResponse = users.stream().map(user -> {
+            UserListResponse userResponse = UserListResponse.builder()
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .build();
+            return  userResponse;
+        }).collect(Collectors.toList());
+        logService.success("Lista de usuários enviada");
+        return usersListResponse;
     }
 }

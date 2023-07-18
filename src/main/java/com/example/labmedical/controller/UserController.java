@@ -29,5 +29,27 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+  
+    @PostMapping("cadastrar")
+    public ResponseEntity<User> userRegister(
+            @RequestBody @Valid UserRegisterRequest userRegisterRequest
+    ) {
+        User User = userService.saveUser(userRegisterRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(User);
+    }
+
+    @GetMapping("listar")
+    public ResponseEntity<List<UserListResponse>> userGetList(){
+        List<UserListResponse> response = userService.getListUsers();
+        return  ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("atualizar/{id}")
+    public ResponseEntity<String> userUpdate(
+           @Valid @PathVariable Long id, @RequestBody UserRegisterRequest request
+    ){
+        String response = userService.updateUser(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }

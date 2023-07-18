@@ -61,14 +61,8 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(retorno);
     }
 
-    @ExceptionHandler(RegisterAlreadyExistExcepetion.class)
-    public ResponseEntity<String> userExist(RegisterAlreadyExistExcepetion e){
-        logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    @ExceptionHandler(EmptyUserListException.class)
-    public ResponseEntity<String> emptyUserList(EmptyUserListException e){
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<String> emptyUserList(UserException e){
         logger.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }

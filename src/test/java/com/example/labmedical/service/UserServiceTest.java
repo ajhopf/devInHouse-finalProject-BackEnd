@@ -4,7 +4,11 @@ import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.enums.Role;
+
 import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
+
+import com.example.labmedical.exceptions.UserException;
+
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
@@ -155,9 +159,9 @@ class UserServiceTest {
             assertDoesNotThrow(() -> userService.updateUserPassword(request));
         }
     }
-
+  
     @Nested
-    @DisplayName("Tests of saveUser methos")
+    @DisplayName("Tests of saveUser methods")
     class saveUserMethodTest {
         @Test
         @DisplayName("When user already exists in database, it should throw RegisterDataAlreadyExist")
@@ -166,9 +170,8 @@ class UserServiceTest {
             UserRegisterRequest request = new UserRegisterRequest();
             request.setEmail("example@example.com");
             request.setCpf("123.456.789-23");
-            assertThrows(RegisterAlreadyExistExcepetion.class, () -> userService.saveUser(request));
+            assertThrows(UserException.class, () -> userService.saveUser(request));
         }
-
         @Test
         @DisplayName("When user doesn't exists in database, it should save user")
         void test2() {
@@ -185,7 +188,6 @@ class UserServiceTest {
             User result = userService.saveUser(request);
             assertEquals(result.getName(), result.getName());
         }
-
         @Test
         @DisplayName("When user exists in database, it should return true")
         void test3() {
@@ -196,7 +198,6 @@ class UserServiceTest {
             Boolean result = userService.checkIfUserExist(request);
             assertTrue(result);
         }
-
         @Test
         @DisplayName("When user exists in database, it should return false")
         void test4() {
@@ -238,4 +239,121 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Test get user's list feature")
+    class findUserListFeatureTest{
+        @Test
+        @DisplayName("When list is empty, it should return empty exception")
+        void test1(){
+            Mockito.when(userRepository.findAll()).thenReturn(new ArrayList<>());
+            assertThrows(UserException.class, () -> userService.getListUsers());
+        }
+        @Test
+        @DisplayName("When list not empty, shoul return a list")
+        void test2(){
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            List<User> list = new ArrayList<>();
+            list.add(user);
+            Mockito.when(userRepository.findAll()).thenReturn(list);
+            List<UserListResponse> response = userService.getListUsers();
+            assertTrue(response.size() > 0);
+            assertEquals(user.getName(), response.get(0).getName());
+        }
+    }
+    @Nested
+    @DisplayName("Test update user feature")
+    class updateUserFeatureTest{
+        @Test
+        @DisplayName("When user not found, it should return exception")
+        void test1(){
+            UserRegisterRequest request = new UserRegisterRequest();
+            UserException userException = assertThrows(UserException.class, () -> userService.updateUser(1l, request));
+            assertEquals("Usuário não encontrado", userException.getMessage());
+        }
+        @Test
+        @DisplayName("When user try change the cpf, it should return a execpetion")
+        void test2(){
+            User user = User.builder()
+                    .id(1l)
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_DOCTOR)
+                    .build();
+            UserRegisterRequest request = UserRegisterRequest.builder()
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-50")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .build();
+            Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+            UserException userException = assertThrows(UserException.class, () -> userService.updateUser(1l, request));
+            assertEquals("CPF não pode ser modificado", userException.getMessage());
+        }
+        @Test
+        @DisplayName("When user try change the role to one not allowed, it should return a execpetion")
+        void test3(){
+            User user = User.builder()
+                    .id(1l)
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_DOCTOR)
+                    .build();
+            UserRegisterRequest request = UserRegisterRequest.builder()
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .build();
+            Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+            UserException userException = assertThrows(UserException.class, () -> userService.updateUser(1l, request));
+            assertEquals("Não é possível modificar para esse tipo de usuário", userException.getMessage());
+        }
+        @Test
+        @DisplayName("When user update data, it should return a string with success")
+        void test4(){
+            User user = User.builder()
+                    .id(1l)
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_DOCTOR)
+                    .build();
+            UserRegisterRequest request = UserRegisterRequest.builder()
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_NURSE)
+                    .build();
+            Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+            String response = userService.updateUser(1l, request);
+            assertEquals("Usuário atualizado com sucesso", response);
+        }
+    }
 }
+

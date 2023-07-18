@@ -7,14 +7,9 @@ import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
-import com.example.labmedical.service.auth.TokenService;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.security.Key;
 
 @Service
 public class UserService {
@@ -22,46 +17,14 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private LogService logService;
-    @Autowired
-    private TokenService tokenService;
-
-//    public AuthenticationResponse loginUser(AuthenticationRequest authenticationRequest) {
-//        String email = authenticationRequest.getEmail();
-//        String password = authenticationRequest.getPassword();
-//
-//        User user = this.findUserByEmailAndPassword(email, password);
-//
-//        String token = Jwts.builder()
-//                .setSubject(user.getName())
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-//                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-//                .compact();
-//
-//        AuthenticationResponse response = AuthenticationResponse.builder()
-//                .name(user.getName())
-//                .photoUrl(user.getPhotoUrl())
-//                .role(user.getRole())
-//                .token(token)
-//                .build();
-//
-//        String logDescription = "O(a) " + response.getRole().toString().substring(5) + " " + response.getName() + " efetuou login no sistema.";
-//
-//        tokenService.save(token, user);
-//
-//        logService.success(logDescription);
-//
-//        return response;
-//    }
 
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password)
                 .orElseThrow(() -> new WrongCredentialsException("Email ou senha informados não conferem ou não existem."));
     }
 
-    public UserIdByEmailResponse findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado."));
+    public UserIdByEmailResponse getUserIdByEmail(String email) {
+        User user = findUserByEmail(email);
 
         return UserIdByEmailResponse.builder()
                 .id(user.getId())
@@ -69,9 +32,9 @@ public class UserService {
                 .build();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
-        return Keys.hmacShaKeyFor(keyBytes);
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado."));
     }
 
     public void updateUserPassword(ResetUserPasswordRequest resetUserPasswordRequest) {
@@ -88,7 +51,7 @@ public class UserService {
 
     public User saveUser(UserRegisterRequest request) {
         Boolean userExist = checkIfUserExist(request);
-        if(userExist){
+        if (userExist) {
             throw new RegisterDataAlreadyExist();
         }
         User user = User.builder()
@@ -106,6 +69,6 @@ public class UserService {
     }
 
     public Boolean checkIfUserExist(UserRegisterRequest request) {
-       return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
+        return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 }

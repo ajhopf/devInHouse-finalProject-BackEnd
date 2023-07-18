@@ -16,18 +16,29 @@ public class TokenService {
     @Autowired
     private UserRepository userRepository;
 
-    public void save(String token, User user) {
-        User existentUser = userRepository.findById(user.getId())
+    public void saveUserToken(User user, String jwtToken) {
+        userRepository.findById(user.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
-        tokenRepository.save(
-                Token.builder()
-                        .token(token)
-                        .expired(false)
-                        .revoked(false)
-                        .tokenType(TokenType.BEARER)
-                        .user(existentUser)
-                        .build()
-        );
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+
+        tokenRepository.save(token);
+    }
+
+    public void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
     }
 }

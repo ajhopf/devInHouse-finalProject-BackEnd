@@ -1,6 +1,5 @@
-package com.example.labmedical.controller.dtos.response;
+package com.example.labmedical.controller.auth;
 
-import com.example.labmedical.enums.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
-    private String token;
-    private Role role;
-    private String name;
-    private String photoUrl;
+
     @JsonProperty("access_token")
     private String accessToken;
 

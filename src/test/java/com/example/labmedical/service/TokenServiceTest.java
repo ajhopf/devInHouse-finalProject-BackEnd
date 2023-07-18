@@ -3,6 +3,7 @@ package com.example.labmedical.service;
 import com.example.labmedical.repository.TokenRepository;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
+import com.example.labmedical.service.auth.TokenService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

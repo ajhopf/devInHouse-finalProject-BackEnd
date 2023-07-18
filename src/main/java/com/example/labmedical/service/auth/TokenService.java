@@ -1,4 +1,4 @@
-package com.example.labmedical.service;
+package com.example.labmedical.service.auth;
 
 import com.example.labmedical.enums.TokenType;
 import com.example.labmedical.repository.TokenRepository;

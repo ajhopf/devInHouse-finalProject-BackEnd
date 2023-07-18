@@ -18,11 +18,6 @@ public class UserService {
     @Autowired
     private LogService logService;
 
-    public User findUserByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new WrongCredentialsException("Email ou senha informados não conferem ou não existem."));
-    }
-
     public UserIdByEmailResponse getUserIdByEmail(String email) {
         User user = findUserByEmail(email);
 
@@ -30,6 +25,11 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .build();
+    }
+
+    public User findUserByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new WrongCredentialsException("Email ou senha informados não conferem ou não existem."));
     }
 
     public User findUserByEmail(String email) {

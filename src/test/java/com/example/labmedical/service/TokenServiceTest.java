@@ -1,5 +1,6 @@
 package com.example.labmedical.service;
 
+import com.example.labmedical.repository.TokenRepository;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,8 @@ class TokenServiceTest {
     private TokenService tokenService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private TokenRepository tokenRepository;
 
     @Nested
     @DisplayName("Tests of save method")

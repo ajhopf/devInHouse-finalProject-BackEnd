@@ -5,6 +5,9 @@ import com.example.labmedical.repository.LogRepository;
 import com.example.labmedical.repository.model.Log;
 import com.example.labmedical.utils.PrintLogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -76,4 +79,9 @@ public class LogService {
         );
     }
 
+    public Page<Log> getAll(int pageNumber, int pageSize){
+        var sort = Sort.by("id").descending();
+        var pageable = PageRequest.of(pageNumber, pageSize, sort);
+        return logRepository.findAll(pageable);
+    }
 }

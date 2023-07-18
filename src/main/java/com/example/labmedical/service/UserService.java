@@ -1,9 +1,11 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
+import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
+import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.exceptions.EmptyUserListException;
 import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 import com.example.labmedical.exceptions.WrongCredentialsException;
@@ -13,6 +15,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +64,17 @@ public class UserService {
 
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(WrongCredentialsException::new);
+                .orElseThrow(() -> new WrongCredentialsException("Email ou senha informados não conferem ou não existem."));
+    }
+
+    public UserIdByEmailResponse findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new WrongCredentialsException("Email informado não encontrado."));
+
+        return UserIdByEmailResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .build();
     }
 
     private Key getSignInKey() {
@@ -69,7 +82,19 @@ public class UserService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String saveUser(UserRegisterRequest request) {
+    public void updateUserPassword(ResetUserPasswordRequest resetUserPasswordRequest) {
+        User user = userRepository.findById(resetUserPasswordRequest.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com id informado"));
+
+        user.setPassword(resetUserPasswordRequest.getPassword());
+        userRepository.save(user);
+
+        String logDescription = "O(a) " + user.getRole().toString().substring(5) + " " + user.getName() + " resetou a senha.";
+        logService.success(logDescription);
+    }
+
+
+    public User saveUser(UserRegisterRequest request) {
         Boolean userExist = checkIfUserExist(request);
         if(userExist){
             throw new RegisterAlreadyExistExcepetion();
@@ -85,12 +110,11 @@ public class UserService {
                 .build();
         userRepository.save(user);
         logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
-        return "Usuário criado com sucesso";
+        return user;
     }
 
-    public Boolean checkIfUserExist(UserRegisterRequest request){
-        Boolean register = userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
-        return register;
+    public Boolean checkIfUserExist(UserRegisterRequest request) {
+       return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 
     public List<UserListResponse> getListUsers() {

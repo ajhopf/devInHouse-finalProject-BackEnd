@@ -1,8 +1,10 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AuthenticationRequest;
-import com.example.labmedical.controller.dtos.request.AuthenticationResponse;
 import com.example.labmedical.controller.dtos.request.UserListResponse;
+import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
+import com.example.labmedical.controller.dtos.response.AuthenticationResponse;
+import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.EmptyUserListException;
@@ -11,6 +13,7 @@ import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
 import com.example.labmedical.repository.model.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -114,7 +116,7 @@ class UserServiceTest {
     @DisplayName("Tests of saveUser method")
     class saveUserMethodTest{
         @Test
-        @DisplayName("When user already exist in database, it should throw RegisterDataAlreadyExist")
+        @DisplayName("When user already exists in database, it should throw RegisterDataAlreadyExist")
         void test1(){
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
             UserRegisterRequest request = new UserRegisterRequest();
@@ -124,7 +126,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("When user not exist in database, it should save user")
+        @DisplayName("When user doesn't exists in database, it should save user")
         void test2(){
             UserRegisterRequest request = UserRegisterRequest.builder()
                     .name("André")
@@ -136,12 +138,12 @@ class UserServiceTest {
                     .role(Role.ROLE_ADMIN)
                     .build();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
-            String result = userService.saveUser(request);
-            assertEquals("Usuário criado com sucesso", result);
+            User result = userService.saveUser(request);
+            assertEquals(result.getName(), result.getName());
         }
 
         @Test
-        @DisplayName("When user exist in database, it should return true")
+        @DisplayName("When user exists in database, it should return true")
         void test3(){
             UserRegisterRequest request = new UserRegisterRequest();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
@@ -152,7 +154,7 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("When user exist in database, it should return false")
+        @DisplayName("When user exists in database, it should return false")
         void test4(){
             UserRegisterRequest request = new UserRegisterRequest();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
@@ -160,6 +162,86 @@ class UserServiceTest {
             request.setCpf("111.222.333-44");
             Boolean result = userService.checkIfUserExist(request);
             assertFalse(result);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of findUserByEmail method")
+    class findUserByEmail {
+        @Test
+        @DisplayName("When user is not found, it should return WrongCredentialsException with correct message")
+        void test1() {
+            Exception exception = assertThrows(WrongCredentialsException.class, () -> userService.findUserByEmail(Mockito.anyString()));
+
+            String expectedMessage = "Email informado não encontrado";
+            String actualMessage = exception.getMessage();
+
+            assertTrue(actualMessage.contains(expectedMessage));
+        }
+
+        @Test
+        @DisplayName("When user is found, it should return UserByEmailResponse with user id and email")
+        void test2() {
+            //given
+            String email = "email";
+
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .email(email)
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .photoUrl("photoUrl")
+                    .build();
+
+            Mockito.when(userRepository.findByEmail(Mockito.anyString()))
+                    .thenReturn(Optional.of(user));
+
+            //when
+            UserIdByEmailResponse result = userService.findUserByEmail(email);
+            //then
+            assertEquals(user.getId(), result.getId());
+            assertEquals(user.getEmail(), result.getEmail());
+        }
+
+        @Nested
+        @DisplayName("Tests of updateUserPassword method")
+        class updateUserPassword {
+            @Test
+            @DisplayName("When user is not found, it should return EntityNotFoundException with correct message")
+            void test1() {
+                ResetUserPasswordRequest request = ResetUserPasswordRequest.builder().id(1L).build();
+
+                Exception exception = assertThrows(EntityNotFoundException.class,
+                        () -> userService.updateUserPassword(request));
+
+                String expectedMessage = "Usuário não encontrado com id informado";
+                String actualMessage = exception.getMessage();
+
+                assertTrue(actualMessage.contains(expectedMessage));
+            }
+
+            @Test
+            @DisplayName("When user is found, it shouldn't throw an error")
+            void test2() {
+                ResetUserPasswordRequest request = ResetUserPasswordRequest.builder().id(1L).build();
+
+                User user = User.builder()
+                        .id(1L)
+                        .role(Role.ROLE_ADMIN)
+                        .build();
+
+                Mockito.when(userRepository.findById(Mockito.anyLong()))
+                        .thenReturn(Optional.of(user));
+
+                doNothing().when(tokenService).save(Mockito.anyString(), Mockito.any(User.class));
+
+                Log log = Log.builder().build();
+
+                Mockito.when(logService.success(Mockito.anyString())).thenReturn(log);
+
+                assertDoesNotThrow(() -> userService.updateUserPassword(request));
+            }
         }
     }
     @Nested

@@ -1,6 +1,7 @@
 package com.example.labmedical.exceptions;
 
 import com.example.labmedical.service.LogService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,16 @@ public class ErrorHandler {
     @Autowired
     private LogService logger;
     @ExceptionHandler(WrongCredentialsException.class)
-    public ResponseEntity<String> entityNotFound(WrongCredentialsException e) {
-        logger.error("Entidade não encontrada " + e.getMessage());
+    public ResponseEntity<String> wrongCredentials(WrongCredentialsException e) {
+        logger.error("Credenciais inválidas: " + e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> entityNotFound(EntityNotFoundException e) {
+        logger.error(e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());

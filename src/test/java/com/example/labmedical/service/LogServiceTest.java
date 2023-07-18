@@ -3,6 +3,8 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.LogRequest;
 import com.example.labmedical.repository.LogRepository;
 import com.example.labmedical.repository.model.Log;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class LogServiceTest {
@@ -24,7 +34,8 @@ class LogServiceTest {
     private LogService logService;
     @Mock
     private LogRepository logRepository;
-
+    @Autowired
+    private ObjectMapper om;
     @Nested
     @DisplayName("Tests of success method")
     class successMethodTests {
@@ -53,7 +64,7 @@ class LogServiceTest {
         @Transactional
         void test3() {
             var description = "Correct Description";
-            var result =  logServiceAutowired.success(description);
+            var result = logServiceAutowired.success(description);
             assertEquals(result.getLogType(), Log.LogType.SUCCESS);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.BACK_END);
@@ -90,7 +101,7 @@ class LogServiceTest {
         @Transactional
         void test3() {
             var description = "Correct Description";
-            var result =  logServiceAutowired.info(description);
+            var result = logServiceAutowired.info(description);
             assertEquals(result.getLogType(), Log.LogType.INFO);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.BACK_END);
@@ -127,7 +138,7 @@ class LogServiceTest {
         @Transactional
         void test3() {
             var description = "Correct Description";
-            var result =  logServiceAutowired.error(description);
+            var result = logServiceAutowired.error(description);
             assertEquals(result.getLogType(), Log.LogType.ERROR);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.BACK_END);
@@ -176,7 +187,7 @@ class LogServiceTest {
                     .logType(Log.LogType.SUCCESS)
                     .description(description)
                     .build();
-            var result =  logServiceAutowired.logFromFront(logRequest);
+            var result = logServiceAutowired.logFromFront(logRequest);
             assertEquals(result.getLogType(), Log.LogType.SUCCESS);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.FRONT_END);
@@ -193,7 +204,7 @@ class LogServiceTest {
                     .logType(Log.LogType.INFO)
                     .description(description)
                     .build();
-            var result =  logServiceAutowired.logFromFront(logRequest);
+            var result = logServiceAutowired.logFromFront(logRequest);
             assertEquals(result.getLogType(), Log.LogType.INFO);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.FRONT_END);
@@ -210,12 +221,50 @@ class LogServiceTest {
                     .logType(Log.LogType.ERROR)
                     .description(description)
                     .build();
-            var result =  logServiceAutowired.logFromFront(logRequest);
+            var result = logServiceAutowired.logFromFront(logRequest);
             assertEquals(result.getLogType(), Log.LogType.ERROR);
             assertEquals(result.getDescription(), description);
             assertEquals(result.getLogOrigin(), Log.LogOrigin.FRONT_END);
             assertNotNull(result.getCreatedDate());
             assertNotNull(result.getId());
         }
+    }
+
+    @Nested
+    @DisplayName("Tests of getAll method")
+    class getAllMethodTests {
+
+        @Test
+        @DisplayName("When asked for page one and ten results per page, it should return one page and 10 results")
+        void test1() {
+            var logList = new ArrayList<Log>(100);
+            for (long i = 0; i < 100; i++) {
+                logList.add(Log.builder()
+                        .id(i)
+                        .logOrigin(Log.LogOrigin.BACK_END)
+                        .description("Log description " + i)
+                        .logType(Log.LogType.SUCCESS)
+                        .build());
+            }
+            var pageNumber = 0;
+            var pageSize = 10;
+            var totalElements = logList.size();
+            var fromIndex = pageNumber * pageSize;
+            var toIndex = Math.min(fromIndex + pageSize, totalElements);
+            var logSublist = logList.subList(fromIndex, toIndex);
+            var logPage = new PageImpl<>(logSublist, PageRequest.of(pageNumber, pageSize), totalElements);
+
+            when(logRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id").descending())))
+                    .thenReturn(logPage);
+
+            var result = logService.getAll(pageNumber, pageSize);
+
+            assertEquals(100, result.getTotalElements());
+            assertEquals(10, result.getTotalPages());
+            assertEquals(10, result.getContent().size());
+            assertEquals(0L, result.getContent().get(0).getId());
+            assertEquals("Log description 0", result.getContent().get(0).getDescription());
+        }
+
     }
 }

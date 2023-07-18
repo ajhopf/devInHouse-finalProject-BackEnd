@@ -3,7 +3,7 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
-import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
+import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
@@ -52,7 +52,7 @@ public class UserService {
     public User saveUser(UserRegisterRequest request) {
         Boolean userExist = checkIfUserExist(request);
         if (userExist) {
-            throw new RegisterDataAlreadyExist();
+            throw new RegisterAlreadyExistExcepetion();
         }
         User user = User.builder()
                 .name(request.getName())

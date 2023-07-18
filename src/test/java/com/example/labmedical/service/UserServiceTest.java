@@ -4,7 +4,7 @@ import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.enums.Role;
-import com.example.labmedical.exceptions.RegisterDataAlreadyExist;
+import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.Log;
@@ -166,7 +166,7 @@ class UserServiceTest {
             UserRegisterRequest request = new UserRegisterRequest();
             request.setEmail("example@example.com");
             request.setCpf("123.456.789-23");
-            assertThrows(RegisterDataAlreadyExist.class, () -> userService.saveUser(request));
+            assertThrows(RegisterAlreadyExistExcepetion.class, () -> userService.saveUser(request));
         }
 
         @Test

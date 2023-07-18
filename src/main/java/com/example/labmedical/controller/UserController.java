@@ -35,14 +35,6 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
-  
-    @PostMapping("cadastrar")
-    public ResponseEntity<User> userRegister(
-            @RequestBody @Valid UserRegisterRequest userRegisterRequest
-    ) {
-        User User = userService.saveUser(userRegisterRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(User);
-    }
 
     @GetMapping("listar")
     public ResponseEntity<List<UserListResponse>> userGetList(){

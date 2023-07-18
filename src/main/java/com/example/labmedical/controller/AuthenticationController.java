@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("cadastrar")
     public ResponseEntity<AuthenticationResponse> registerUser(
             @RequestBody UserRegisterRequest request,
             @RequestParam Role role

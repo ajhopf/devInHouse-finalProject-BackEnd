@@ -1,11 +1,10 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
+import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 import com.example.labmedical.enums.Role;
-
-import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 
 import com.example.labmedical.exceptions.UserException;
 
@@ -23,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

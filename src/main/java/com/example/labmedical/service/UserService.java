@@ -1,10 +1,9 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
+import com.example.labmedical.controller.dtos.request.UserListResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
-
-import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.UserException;
@@ -16,9 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.security.Key;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -65,9 +61,6 @@ public class UserService {
         Boolean userExist = checkIfUserExist(request);
 
         if (userExist) {
-            throw new RegisterAlreadyExistExcepetion();
-
-        if(userExist){
             throw new UserException("O e-mail ou CPF fornecido já está em uso");
 
         }
@@ -86,12 +79,12 @@ public class UserService {
     }
 
     public Boolean checkIfUserExist(UserRegisterRequest request) {
-       return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
+        return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 
     public List<UserListResponse> getListUsers() {
         List<User> users = userRepository.findAll();
-        if(users.size() == 0){
+        if (users.size() == 0) {
             throw new UserException("Lista de usários vazia");
         }
         List<UserListResponse> usersListResponse = users.stream().map(user -> {
@@ -100,7 +93,7 @@ public class UserService {
                     .email(user.getEmail())
                     .role(user.getRole())
                     .build();
-            return  userResponse;
+            return userResponse;
         }).collect(Collectors.toList());
         logService.success("Lista de usuários enviada");
         return usersListResponse;
@@ -109,11 +102,11 @@ public class UserService {
 
     public String updateUser(Long id, UserRegisterRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserException("Usuário não encontrado"));
-        if (!Objects.equals(user.getCpf(), request.getCpf())){
+        if (!Objects.equals(user.getCpf(), request.getCpf())) {
             throw new UserException("CPF não pode ser modificado");
         }
         Boolean canUpdateRole = checkRoleUpdate(user.getRole(), request.getRole());
-        if (!canUpdateRole){
+        if (!canUpdateRole) {
             throw new UserException("Não é possível modificar para esse tipo de usuário");
         }
         user.setName(request.getName());
@@ -126,13 +119,13 @@ public class UserService {
         return "Usuário atualizado com sucesso";
     }
 
-    Boolean checkRoleUpdate(Role currentRole, Role newRole){
-        if (!Objects.equals(newRole, Role.ROLE_DOCTOR) && !Objects.equals(newRole, Role.ROLE_NURSE)){
+    Boolean checkRoleUpdate(Role currentRole, Role newRole) {
+        if (!Objects.equals(newRole, Role.ROLE_DOCTOR) && !Objects.equals(newRole, Role.ROLE_NURSE)) {
             return false;
         }
         if (!Objects.equals(currentRole, Role.ROLE_DOCTOR) && !Objects.equals(currentRole, Role.ROLE_NURSE)) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }

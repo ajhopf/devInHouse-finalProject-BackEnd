@@ -28,6 +28,8 @@ public class SecurityConfiguration {
         http
                 .csrf()
                 .disable()
+                .cors()
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/usuarios/login", "api/usuarios/{email}", "/api/usuarios/resetarsenha", "/swagger-ui/**", "/v3/api-docs/**", "/proxy/**", "/actuator/**", "/docs")
                     .permitAll()

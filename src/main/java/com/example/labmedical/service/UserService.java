@@ -1,10 +1,9 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
+import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
-
-import com.example.labmedical.exceptions.RegisterAlreadyExistExcepetion;
 
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.UserException;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.security.Key;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,13 +60,8 @@ public class UserService {
 
     public User saveUser(UserRegisterRequest request) {
         Boolean userExist = checkIfUserExist(request);
-
-        if (userExist) {
-            throw new RegisterAlreadyExistExcepetion();
-
         if(userExist){
             throw new UserException("O e-mail ou CPF fornecido já está em uso");
-
         }
         User user = User.builder()
                 .name(request.getName())
@@ -89,13 +81,14 @@ public class UserService {
        return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 
-    public List<UserListResponse> getListUsers() {
+    public List<UserResponse> getListUsers() {
         List<User> users = userRepository.findAll();
         if(users.size() == 0){
             throw new UserException("Lista de usários vazia");
         }
-        List<UserListResponse> usersListResponse = users.stream().map(user -> {
-            UserListResponse userResponse = UserListResponse.builder()
+        List<UserResponse> usersListResponse = users.stream().map(user -> {
+            UserResponse userResponse = UserResponse.builder()
+                    .id(user.getId())
                     .name(user.getName())
                     .email(user.getEmail())
                     .role(user.getRole())
@@ -135,5 +128,12 @@ public class UserService {
         }else {
             return true;
         }
+    }
+
+    public String deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException("Usuário não encontrado"));
+        userRepository.deleteById(user.getId());
+        logService.success(String.format("Usuário ID: %d removido", user.getId()));
+        return "Usuário removido com sucesso";
     }
 }

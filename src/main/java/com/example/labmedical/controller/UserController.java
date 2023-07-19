@@ -2,10 +2,9 @@ package com.example.labmedical.controller;
 
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
-import com.example.labmedical.controller.dtos.request.UserListResponse;
+import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
-import com.example.labmedical.repository.model.User;
 import com.example.labmedical.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,8 @@ public class UserController {
     }
 
     @GetMapping("listar")
-    public ResponseEntity<List<UserListResponse>> userGetList(){
-        List<UserListResponse> response = userService.getListUsers();
+    public ResponseEntity<List<UserResponse>> userGetList(){
+        List<UserResponse> response = userService.getListUsers();
         return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -50,4 +49,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("deletar/{id}")
+    public ResponseEntity<String> userDelete(
+            @Valid @PathVariable Long id
+    ){
+        String response = userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

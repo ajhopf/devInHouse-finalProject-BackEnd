@@ -5,6 +5,7 @@ import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
 import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
+import com.example.labmedical.repository.model.User;
 import com.example.labmedical.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

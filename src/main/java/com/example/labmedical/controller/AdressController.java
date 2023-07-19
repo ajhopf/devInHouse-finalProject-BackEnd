@@ -2,6 +2,7 @@ package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.AddressRegisterRequest;
 import com.example.labmedical.controller.dtos.response.AddressResponse;
+import com.example.labmedical.repository.model.Address;
 import com.example.labmedical.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,16 @@ public class AdressController {
     AddressService addressService;
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<AddressResponse> registerAddress(
+    public ResponseEntity<Address> registerAddress(
             @RequestBody @Valid AddressRegisterRequest addressRegisterRequest,
             UriComponentsBuilder uriBuilder
             ) {
-        AddressResponse address = addressService.registerAdress(addressRegisterRequest);
+        Address address = addressService.registerAdress(addressRegisterRequest);
 
         URI uri = uriBuilder.path("/api/enderecos/{id}")
                 .buildAndExpand(address.getId())
                 .toUri();
+
 
         return ResponseEntity.created(uri).body(address);
     }

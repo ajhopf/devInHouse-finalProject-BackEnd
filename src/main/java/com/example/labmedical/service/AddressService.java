@@ -18,7 +18,7 @@ public class AddressService {
     @Autowired
     private LogService logService;
 
-    public AddressResponse registerAdress(AddressRegisterRequest adressPostRequest) {
+    public Address registerAdress(AddressRegisterRequest adressPostRequest) {
         Address address = adressMapper.map(adressPostRequest);
 
         address = addressRepository.save(address);
@@ -26,7 +26,7 @@ public class AddressService {
         String logDescription = "O endereço com id " + address.getId() + " foi registrado.";
         logService.success(logDescription);
 
-        return adressMapper.map(address);
+        return address;
     }
 
     public AddressResponse getAddressById(Long id) {

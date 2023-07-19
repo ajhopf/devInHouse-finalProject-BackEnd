@@ -53,7 +53,7 @@ class AddressServiceTest {
                     .thenReturn(addressWithId);
             Mockito.when(logService.success(Mockito.anyString())).thenReturn(log);
 
-            AddressResponse response = addressService.registerAdress(addressRegisterRequest);
+            Address response = addressService.registerAdress(addressRegisterRequest);
 
             assertEquals(addressWithId.getId(), response.getId());
         }

@@ -32,4 +32,6 @@ public class PacientResponse {
     private String healthInsurance;
     private LocalDate healthInsuranceExpirationDate;
     private Address address;
+    private String role;
+    private Boolean isActive;
 }

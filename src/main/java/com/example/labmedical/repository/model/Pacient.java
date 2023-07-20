@@ -1,6 +1,7 @@
 package com.example.labmedical.repository.model;
 
 import com.example.labmedical.enums.CivilStatus;
+import com.example.labmedical.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,4 +45,9 @@ public class Pacient {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Address address;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+    @Column(nullable = false)
+    private Boolean isActive;
 }

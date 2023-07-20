@@ -40,6 +40,33 @@ class PacientServiceTest {
     private PacientService pacientService;
 
     @Nested
+    @DisplayName("Tests of getPacients method")
+    class getPacientsTest {
+        @Test
+        @DisplayName("When two pacients are registered, it should return List with two PacientResponse")
+        void test1() {
+            List<Pacient> pacientList = List.of(
+                    Pacient.builder().build(),
+                    Pacient.builder().build()
+            );
+
+            Mockito.when(pacientRepository.findAll()).thenReturn(pacientList);
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class))).thenReturn(PacientResponse.builder().build());
+
+            List<PacientResponse> result = pacientService.getPacients();
+
+            assertEquals(2, result.size());
+        }
+
+        @Test
+        @DisplayName("When no pacient is registered, it should return empty list")
+        void test2() {
+            List<PacientResponse> result = pacientService.getPacients();
+            assertEquals(0, result.size());
+        }
+    }
+
+    @Nested
     @DisplayName("Tests of registerPacient method")
     class registerPacientTests {
         @Test

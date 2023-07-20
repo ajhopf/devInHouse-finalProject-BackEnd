@@ -9,6 +9,7 @@ import com.example.labmedical.repository.model.Pacient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +26,18 @@ public class PacientService {
     private SpecialCareService specialCareService;
     @Autowired
     private LogService logService;
+
+    public List<PacientResponse> getPacients() {
+        List<Pacient> pacientList = pacientRepository.findAll();
+        List<PacientResponse> pacientResponseList = new ArrayList<>();
+
+        for (Pacient pacient : pacientList) {
+            PacientResponse pacientResponse = pacientMapper.map(pacient);
+            pacientResponseList.add(pacientResponse);
+        }
+
+        return pacientResponseList;
+    }
 
     public PacientResponse registerPacient(PacientRegisterRequest request) {
         Boolean pacientExists = checkIfPacientExists(request);

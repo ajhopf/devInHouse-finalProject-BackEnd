@@ -36,7 +36,7 @@ class AddressServiceTest {
     class registerAddressTests {
         @Test
         @DisplayName("When registering an address, it should return an address with id")
-        void test1(){
+        void test1() {
             Address address = Address.builder().id(1L).build();
             Address addressWithId = Address.builder()
                     .id(1L)
@@ -46,7 +46,7 @@ class AddressServiceTest {
             Log log = Log.builder().build();
 
             Mockito.when(adressMapper.map(Mockito.any(AddressRegisterRequest.class)))
-                            .thenReturn(address);
+                    .thenReturn(address);
             Mockito.when(adressMapper.map(Mockito.any(Address.class)))
                     .thenReturn(addressResponse);
             Mockito.when(addressRepository.save(Mockito.any(Address.class)))
@@ -61,16 +61,16 @@ class AddressServiceTest {
 
     @Nested
     @DisplayName("Tests of getAddressById method")
-    class getAddressByIdTests{
+    class getAddressByIdTests {
         @Test
         @DisplayName("When no address is found with given id, it should throw EntityNotFoundException")
-        void test1(){
+        void test1() {
             assertThrows(EntityNotFoundException.class, () -> addressService.getAddressById(Mockito.anyLong()));
         }
 
         @Test
         @DisplayName("When address is found, it should return AddressResponse")
-        void test2(){
+        void test2() {
             Address address = Address.builder().build();
 
             AddressResponse addressResponse = AddressResponse.builder()
@@ -87,6 +87,43 @@ class AddressServiceTest {
 
             assertEquals(addressResponse.getId(), response.getId());
 
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of updateAddressById method")
+    class updateAddressByIdTest {
+        @Test
+        @DisplayName("When address doesnt exist, it should throw EntityNotFoundException")
+        void test1() {
+            assertThrows(EntityNotFoundException.class,
+                    () -> addressService.updateAddressById(1L, AddressRegisterRequest.builder().build()));
+        }
+
+        @Test
+        @DisplayName("When address is found, it should return Address object with the correct id and infos")
+        void test2() {
+            Address address = Address
+                    .builder()
+                    .city("Florianopolis")
+                    .state("SC")
+                    .build();
+
+            Log log = Log.builder().build();
+
+            Mockito.when(addressRepository.existsById(Mockito.anyLong())).thenReturn(true);
+            Mockito.when(adressMapper.map(Mockito.any(AddressRegisterRequest.class)))
+                    .thenReturn(address);
+            Mockito.when(addressRepository.save(Mockito.any(Address.class)))
+                    .thenReturn(address);
+            Mockito.when(logService.success(Mockito.anyString()))
+                    .thenReturn(log);
+
+            Address result = addressService.updateAddressById(1L, AddressRegisterRequest.builder().build());
+
+            assertEquals(1L, result.getId());
+            assertEquals("Florianopolis", result.getCity());
+            assertEquals("SC", result.getState());
         }
     }
 

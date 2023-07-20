@@ -1,12 +1,10 @@
 package com.example.labmedical.service;
 
-import com.example.labmedical.controller.dtos.request.AddressRegisterRequest;
 import com.example.labmedical.controller.dtos.request.PacientRegisterRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.controller.mapper.PacientMapper;
 import com.example.labmedical.exceptions.PacientAlreadyRegisteredException;
 import com.example.labmedical.repository.PacientRepository;
-import com.example.labmedical.repository.model.Address;
 import com.example.labmedical.repository.model.Pacient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,24 +33,9 @@ public class PacientService {
             throw new PacientAlreadyRegisteredException("Paciente não cadastrado. Cpf ou email já estão em uso.");
         }
 
-        AddressRegisterRequest pacientAddressToRegister = request.getAddress();
-        Address addressWithId = addressService.registerAdress(pacientAddressToRegister);
+        Pacient pacient = pacientMapper.map(request);
 
-        Pacient pacient = Pacient.builder()
-                .email(request.getEmail())
-                .dob(request.getDob())
-                .cpf(request.getCpf())
-                .rg(request.getRg())
-                .gender(request.getGender())
-                .name(request.getName())
-                .phone(request.getPhone())
-                .civilStatus(request.getCivilStatus())
-                .emergencyContact(request.getEmergencyContact())
-                .healthInsurance(request.getHealthInsurance())
-                .nationality(request.getNationality())
-                .healthInsuranceExpirationDate(request.getHealthInsuranceExpirationDate())
-                .address(addressWithId)
-                .build();
+        addressService.registerAdress(pacient.getAddress());
 
         pacient = pacientRepository.save(pacient);
 

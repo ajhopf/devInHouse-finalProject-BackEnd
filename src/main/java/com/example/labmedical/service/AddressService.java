@@ -29,6 +29,15 @@ public class AddressService {
         return address;
     }
 
+    public Address registerAdress(Address address) {
+        addressRepository.save(address);
+
+        String logDescription = "O endereço com id " + address.getId() + " foi registrado.";
+        logService.success(logDescription);
+
+        return address;
+    }
+
     public AddressResponse getAddressById(Long id) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Endereço com id " + id + " não encontrado."));

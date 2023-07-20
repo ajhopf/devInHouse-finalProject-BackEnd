@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,20 @@ import java.util.stream.Collectors;
 public class ErrorHandler {
     @Autowired
     private LogService logger;
+    @ExceptionHandler(PacientAlreadyRegisteredException.class)
+    public ResponseEntity<String> pacientAlreadyRegistered(PacientAlreadyRegisteredException e) {
+        logger.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> httpMessageNotReadable(HttpMessageNotReadableException e) {
+        logger.error("Erro de requisição.");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
     @ExceptionHandler(WrongCredentialsException.class)
     public ResponseEntity<String> wrongCredentials(WrongCredentialsException e) {
 //        logger.error("Credenciais inválidas: " + e.getMessage());

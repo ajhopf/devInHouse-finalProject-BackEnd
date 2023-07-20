@@ -1,11 +1,13 @@
 package com.example.labmedical.repository.model;
 
 import com.example.labmedical.enums.CivilStatus;
+import com.example.labmedical.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.time.LocalDate;
 
@@ -44,4 +46,10 @@ public class Pacient {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Address address;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+    @Column(nullable = false)
+    @ReadOnlyProperty
+    private Boolean isActive;
 }

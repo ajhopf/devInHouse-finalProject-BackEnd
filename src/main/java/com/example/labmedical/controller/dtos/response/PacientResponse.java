@@ -30,6 +30,7 @@ public class PacientResponse {
     private List<String> alergies;
     private List<String> specialCare;
     private String healthInsurance;
+    private String healthInsuranceNumber;
     private LocalDate healthInsuranceExpirationDate;
     private Address address;
     private String role;

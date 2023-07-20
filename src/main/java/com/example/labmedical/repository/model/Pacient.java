@@ -42,6 +42,7 @@ public class Pacient {
     @Column(nullable = false)
     private String emergencyContact;
     private String healthInsurance;
+    private String healthInsuranceNumber;
     private LocalDate healthInsuranceExpirationDate;
     @ManyToOne
     @JoinColumn(nullable = false)

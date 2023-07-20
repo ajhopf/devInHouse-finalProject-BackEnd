@@ -45,6 +45,7 @@ public class PacientRegisterRequest {
     private List<String> alergies;
     private List<String> specialCare;
     private String healthInsurance;
+    private String healthInsuranceNumber;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate healthInsuranceExpirationDate;
     @NotNull

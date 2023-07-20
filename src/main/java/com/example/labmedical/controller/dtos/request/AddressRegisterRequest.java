@@ -1,7 +1,6 @@
 package com.example.labmedical.controller.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,16 +17,16 @@ public class AddressRegisterRequest {
     @Pattern(regexp = "\\d{5}-\\d{3}", message = "Cep deve estar no formato '12345-123'.")
     private String cep;
     @NotBlank
-    private String cidade;
+    private String city;
     @NotBlank
     @Length(min = 2, max = 2, message = "Insira a sigla do estado.")
-    private String estado;
+    private String state;
     @NotBlank
-    private String logradouro;
-    @NotNull
-    private Integer numero;
-    private String complemento;
+    private String street;
     @NotBlank
-    private String bairro;
-    private String pontoReferencia;
+    private String houseNumber;
+    private String complement;
+    @NotBlank
+    private String district;
+    private String referencePoint;
 }

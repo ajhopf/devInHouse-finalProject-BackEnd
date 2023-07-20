@@ -18,16 +18,15 @@ public class Address {
     @Column(nullable = false)
     private String cep;
     @Column(nullable = false)
-    private String cidade;
+    private String city;
     @Column(nullable = false)
-    private String estado;
+    private String state;
     @Column(nullable = false)
-    private String logradouro;
+    private String street;
     @Column(nullable = false)
-    private String numero;
-    private String complemento;
+    private String houseNumber;
+    private String complement;
     @Column(nullable = false)
-    private String bairro;
-    @Column(name = "ponto_referencia")
-    private String pontoReferencia;
+    private String district;
+    private String referencePoint;
 }

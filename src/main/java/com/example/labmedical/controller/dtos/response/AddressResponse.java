@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class AddressResponse {
     private Long id;
     private String cep;
-    private String cidade;
-    private String estado;
-    private String logradouro;
-    private Integer numero;
-    private String complemento;
-    private String bairro;
-    private String pontoReferencia;
+    private String city;
+    private String state;
+    private String street;
+    private String houseNumber;
+    private String complement;
+    private String district;
+    private String referencePoint;
 }

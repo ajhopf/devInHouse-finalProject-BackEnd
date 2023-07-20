@@ -1,10 +1,12 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
-import com.example.labmedical.controller.dtos.request.UserListResponse;
+import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 
+import com.example.labmedical.controller.mapper.UserMapper;
+import com.example.labmedical.controller.mapper.UserResponseMapper;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.UserException;
 
@@ -25,6 +27,10 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private LogService logService;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserResponseMapper userResponseMapper;
 
     public UserIdByEmailResponse getUserIdByEmail(String email) {
         User user = findUserByEmail(email);
@@ -64,15 +70,7 @@ public class UserService {
             throw new UserException("O e-mail ou CPF fornecido já está em uso");
 
         }
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .role(request.getRole())
-                .password(request.getPassword())
-                .gender(request.getGender())
-                .cpf(request.getCpf())
-                .telephone(request.getTelephone())
-                .build();
+        User user = userMapper.map(request);
         userRepository.save(user);
         logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
         return user;
@@ -82,17 +80,13 @@ public class UserService {
         return userRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
     }
 
-    public List<UserListResponse> getListUsers() {
+    public List<UserResponse> getListUsers() {
         List<User> users = userRepository.findAll();
         if (users.size() == 0) {
             throw new UserException("Lista de usários vazia");
         }
-        List<UserListResponse> usersListResponse = users.stream().map(user -> {
-            UserListResponse userResponse = UserListResponse.builder()
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .role(user.getRole())
-                    .build();
+        List<UserResponse> usersListResponse = users.stream().map(user -> {
+            UserResponse userResponse = userResponseMapper.map(user);
             return userResponse;
         }).collect(Collectors.toList());
         logService.success("Lista de usuários enviada");
@@ -128,5 +122,12 @@ public class UserService {
         } else {
             return true;
         }
+    }
+
+    public UserResponse userSearch(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException("Usuário não encontrado"));
+        logService.success(String.format("Usuário ID: %d encontrado", user.getId()));
+        UserResponse response = userResponseMapper.map(user);
+        return response;
     }
 }

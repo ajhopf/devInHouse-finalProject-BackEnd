@@ -88,7 +88,7 @@ class PacientServiceTest {
             Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
                     .thenReturn(new ArrayList<>());
 
-            PacientResponse result = pacientService.getPacientById(1L);
+            PacientResponse result = pacientService.getPacientResponseById(1L);
 
             assertEquals("Andre", result.getName());
             assertEquals(1L, result.getId());
@@ -109,7 +109,7 @@ class PacientServiceTest {
             Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
                     .thenReturn(new ArrayList<>());
 
-            PacientResponse result = pacientService.getPacientById(1L);
+            PacientResponse result = pacientService.getPacientResponseById(1L);
 
             assertEquals(pacientAlergies, result.getAlergies());
         }
@@ -129,7 +129,7 @@ class PacientServiceTest {
             Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
                     .thenReturn(pacientSpecialCares);
 
-            PacientResponse result = pacientService.getPacientById(1L);
+            PacientResponse result = pacientService.getPacientResponseById(1L);
 
             assertEquals(pacientSpecialCares, result.getSpecialCare());
         }
@@ -137,7 +137,7 @@ class PacientServiceTest {
         @Test
         @DisplayName("When no pacient is found with given id, it should throw EntityNotFoundException")
         void test4() {
-            assertThrows(EntityNotFoundException.class, () -> pacientService.getPacientById(Mockito.anyLong()));
+            assertThrows(EntityNotFoundException.class, () -> pacientService.getPacientResponseById(Mockito.anyLong()));
         }
     }
 

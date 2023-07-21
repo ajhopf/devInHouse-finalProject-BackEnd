@@ -41,6 +41,8 @@ public class PacientService {
             pacientResponseList.add(pacientResponse);
         }
 
+        logService.success("Busca de todos pacientes realizada.");
+
         return pacientResponseList;
     }
 

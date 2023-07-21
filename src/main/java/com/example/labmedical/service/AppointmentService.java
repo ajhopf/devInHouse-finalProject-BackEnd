@@ -8,6 +8,8 @@ import com.example.labmedical.repository.model.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AppointmentService {
     @Autowired
@@ -19,6 +21,22 @@ public class AppointmentService {
     @Autowired
     private LogService logService;
 
+    public List<AppointmentResponse> getAppointments(Long pacientId) {
+        List<Appointment> appointmentList;
+
+        if (pacientId != null) {
+            pacientService.getPacientById(pacientId);
+
+            appointmentList = appointmentRepository.getAppointmentsByPacient_Id(pacientId);
+            logService.success("Busca de lista de consultas do paciente " + pacientId + " realizada.");
+        } else {
+            appointmentList = appointmentRepository.findAll();
+            logService.success("Busca de lista de consultas de todos pacientes realizada.");
+        }
+
+        return appointmentMapper.map(appointmentList);
+    }
+
     public AppointmentResponse registerAppointment(AppointmentRegisterRequest request) {
         pacientService.getPacientById(request.getPacientId());
 
@@ -29,5 +47,4 @@ public class AppointmentService {
 
         return appointmentMapper.map(appointment);
     }
-
 }

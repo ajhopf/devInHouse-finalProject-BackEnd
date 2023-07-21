@@ -7,10 +7,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AppointmentMapper {
     @Mapping(target = "pacient.id", source = "pacientId")
     Appointment map(AppointmentRegisterRequest source);
     @Mapping(target = "pacientId", source = "pacient.id")
     AppointmentResponse map(Appointment source);
+
+    @Mapping(target = "pacientId", source = "pacient.id")
+    List<AppointmentResponse> map(List<Appointment> source);
 }

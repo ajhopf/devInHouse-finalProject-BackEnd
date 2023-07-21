@@ -10,12 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/consultas")
 @RequiredArgsConstructor
 public class AppointmentController {
     private final AppointmentService appointmentService;
+
+    @GetMapping
+    public ResponseEntity<List<AppointmentResponse>> getAppointments(
+            @RequestParam(required = false) Long pacientId
+            ) {
+        System.out.println(pacientId);
+        List<AppointmentResponse> appointmentList = appointmentService.getAppointments(pacientId);
+
+        return ResponseEntity.ok(appointmentList);
+    }
 
     @PostMapping("/cadastrar")
     public ResponseEntity<AppointmentResponse> registerAppointment(

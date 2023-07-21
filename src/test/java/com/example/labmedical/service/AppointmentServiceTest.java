@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -128,6 +129,30 @@ class AppointmentServiceTest {
 
             Mockito.verify(appointmentRepository, times(1))
                     .save(appointment);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of deleteAppointment method")
+    class deleteAppointmentTests {
+        @Test
+        @DisplayName("When no appointment is found with given id, it should throw EntityNotFoundException")
+        void test1() {
+            assertThrows(EntityNotFoundException.class, () -> appointmentService.deleteAppointment(Mockito.anyLong()));
+        }
+
+        @Test
+        @DisplayName("When appointment is found with given id, it should delete it")
+        void test2() {
+            Appointment appointment = Appointment.builder().build();
+
+            Mockito.when(appointmentRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(appointment));
+
+            appointmentService.deleteAppointment(1L);
+
+            Mockito.verify(appointmentRepository, times(1))
+                    .delete(appointment);
         }
     }
 

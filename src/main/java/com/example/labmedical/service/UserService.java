@@ -5,6 +5,8 @@ import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
 
+import com.example.labmedical.controller.mapper.UserMapper;
+import com.example.labmedical.controller.mapper.UserResponseMapper;
 import com.example.labmedical.enums.Role;
 import com.example.labmedical.exceptions.UserException;
 
@@ -14,7 +16,6 @@ import com.example.labmedical.repository.model.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,10 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private LogService logService;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserResponseMapper userResponseMapper;
 
     public UserIdByEmailResponse getUserIdByEmail(String email) {
         User user = findUserByEmail(email);
@@ -63,16 +68,9 @@ public class UserService {
 
         if (userExist) {
             throw new UserException("O e-mail ou CPF fornecido já está em uso");
+
         }
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .role(request.getRole())
-                .password(request.getPassword())
-                .gender(request.getGender())
-                .cpf(request.getCpf())
-                .telephone(request.getTelephone())
-                .build();
+        User user = userMapper.map(request);
         userRepository.save(user);
         logService.success(String.format("Usuário id: %d cadastrado", user.getId()));
         return user;
@@ -88,12 +86,7 @@ public class UserService {
             throw new UserException("Lista de usários vazia");
         }
         List<UserResponse> usersListResponse = users.stream().map(user -> {
-            UserResponse userResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .role(user.getRole())
-                    .build();
+            UserResponse userResponse = userResponseMapper.map(user);
             return userResponse;
         }).collect(Collectors.toList());
         logService.success("Lista de usuários enviada");
@@ -129,6 +122,13 @@ public class UserService {
         } else {
             return true;
         }
+    }
+
+    public UserResponse userSearch(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException("Usuário não encontrado"));
+        logService.success(String.format("Usuário ID: %d encontrado", user.getId()));
+        UserResponse response = userResponseMapper.map(user);
+        return response;
     }
 
     public String deleteUser(Long id) {

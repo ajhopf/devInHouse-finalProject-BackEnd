@@ -1,6 +1,7 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.PacientRegisterRequest;
+import com.example.labmedical.controller.dtos.request.PacientUpdateRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.service.PacientService;
 import jakarta.validation.Valid;
@@ -25,6 +26,13 @@ public class PacientController {
         return ResponseEntity.ok().body(pacientResponseList);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PacientResponse> getPacientById(@PathVariable Long id){
+        PacientResponse pacient = pacientService.getPacientById(id);
+
+        return ResponseEntity.ok(pacient);
+    }
+
     @PostMapping
     public ResponseEntity<PacientResponse> registerPacient(
             @RequestBody @Valid PacientRegisterRequest pacientRegisterRequest,
@@ -37,6 +45,17 @@ public class PacientController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(pacient);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PacientResponse> updatePacient(
+            @PathVariable Long id,
+            @RequestBody @Valid PacientUpdateRequest request
+            ) {
+
+        PacientResponse pacient = pacientService.updatePacient(request, id);
+
+        return ResponseEntity.ok(pacient);
     }
 
 }

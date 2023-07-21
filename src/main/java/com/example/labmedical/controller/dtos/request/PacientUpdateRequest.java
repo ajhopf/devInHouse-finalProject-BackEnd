@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PacientRegisterRequest {
+public class PacientUpdateRequest {
     @NotBlank(message = "Campo 'name' não pode estar em branco")
     @Size(min = 8, max = 64, message = "Nome deve ter entre 8 e 64 caracteres")
     private String name;
@@ -24,10 +24,6 @@ public class PacientRegisterRequest {
     @NotNull(message = "É necessário inserir uma data de nascimento.")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dob;
-    @Pattern(regexp = "([0-9]{3}[.][0-9]{3}[.][0-9]{3}-[0-9]{2})", message = "CPF deve estar no formato 000.000.000-00")
-    @NotBlank
-    private String cpf;
-    private String rg;
     @NotNull(message = "É necessário inserir um estado civil.")
     private CivilStatus civilStatus;
     @NotBlank

@@ -41,7 +41,26 @@ public class PacientService {
             pacientResponseList.add(pacientResponse);
         }
 
+        logService.success("Busca de todos pacientes realizada.");
+
         return pacientResponseList;
+    }
+
+
+    public PacientResponse getPacientById(Long id) {
+        Pacient pacient = pacientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente com id " + id + " não encontrado."));
+
+        PacientResponse pacientResponse = pacientMapper.map(pacient);
+
+        List<String> pacientAlergies = alergyService.getAllPacientAlergies(id);
+        List<String> pacientSpecialCares = specialCareService.getAllPacientSpecialCares(id);
+        pacientResponse.setAlergies(pacientAlergies);
+        pacientResponse.setSpecialCare(pacientSpecialCares);
+
+        logService.success("Busca pelo paciente com id " + id + " realizada.");
+
+        return pacientResponse;
     }
 
     public PacientResponse registerPacient(PacientRegisterRequest request) {

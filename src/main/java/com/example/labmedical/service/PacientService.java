@@ -47,7 +47,7 @@ public class PacientService {
     }
 
 
-    public PacientResponse getPacientById(Long id) {
+    public PacientResponse getPacientResponseById(Long id) {
         Pacient pacient = pacientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente com id " + id + " não encontrado."));
 
@@ -61,6 +61,11 @@ public class PacientService {
         logService.success("Busca pelo paciente com id " + id + " realizada.");
 
         return pacientResponse;
+    }
+
+    public Pacient getPacientById(Long id) {
+        return pacientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente com id " + id + " não encontrado."));
     }
 
     public PacientResponse registerPacient(PacientRegisterRequest request) {

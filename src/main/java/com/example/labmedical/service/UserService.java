@@ -13,6 +13,7 @@ import com.example.labmedical.exceptions.UserException;
 import com.example.labmedical.exceptions.WrongCredentialsException;
 import com.example.labmedical.repository.UserRepository;
 import com.example.labmedical.repository.model.User;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,12 +104,10 @@ public class UserService {
         if (!canUpdateRole) {
             throw new UserException("Não é possível modificar para esse tipo de usuário");
         }
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setGender(request.getGender());
-        user.setPassword(request.getPassword());
-        user.setTelephone(request.getTelephone());
-        userRepository.save(user);
+        User newUser = userMapper.map(request);
+        newUser.setId(user.getId());
+        newUser.setCpf(user.getCpf());
+        userRepository.save(newUser);
         logService.success(String.format("Usuário id: %d atualizado", user.getId()));
         return "Usuário atualizado com sucesso";
     }

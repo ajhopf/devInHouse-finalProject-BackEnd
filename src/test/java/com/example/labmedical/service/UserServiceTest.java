@@ -377,6 +377,17 @@ class UserServiceTest {
                     .role(Role.ROLE_NURSE)
                     .build();
             Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+            User newUser = User.builder()
+                    .id(1l)
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_DOCTOR)
+                    .build();
+            when(userMapper.map(request)).thenReturn(newUser);
             String response = userService.updateUser(1l, request);
             assertEquals("Usuário atualizado com sucesso", response);
         }

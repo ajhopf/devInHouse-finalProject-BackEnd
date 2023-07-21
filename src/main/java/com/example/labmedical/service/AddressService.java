@@ -30,12 +30,12 @@ public class AddressService {
     }
 
     public Address registerAdress(Address address) {
-        addressRepository.save(address);
+        Address savedAddress = addressRepository.save(address);
 
-        String logDescription = "O endereço com id " + address.getId() + " foi registrado.";
+        String logDescription = "O endereço com id " + savedAddress.getId() + " foi registrado.";
         logService.success(logDescription);
 
-        return address;
+        return savedAddress;
     }
 
     public AddressResponse getAddressById(Long id) {

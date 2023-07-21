@@ -35,9 +35,9 @@ class AddressServiceTest {
     @DisplayName("Tests of registerAddress method")
     class registerAddressTests {
         @Test
-        @DisplayName("When registering an address, it should return an address with id")
+        @DisplayName("When registering an AddressRegisterRequest, it should return an address with id")
         void test1() {
-            Address address = Address.builder().id(1L).build();
+            Address address = Address.builder().build();
             Address addressWithId = Address.builder()
                     .id(1L)
                     .build();
@@ -53,9 +53,25 @@ class AddressServiceTest {
                     .thenReturn(addressWithId);
             Mockito.when(logService.success(Mockito.anyString())).thenReturn(log);
 
-            Address response = addressService.registerAdress(addressRegisterRequest);
+            Address result = addressService.registerAdress(addressRegisterRequest);
 
-            assertEquals(addressWithId.getId(), response.getId());
+            assertEquals(addressWithId.getId(), result.getId());
+        }
+
+        @Test
+        @DisplayName("When registering an Address, it should return an address with id")
+        void test2() {
+            Address address = Address.builder().build();
+            Address addressWithId = Address.builder().id(1L).build();
+
+            Mockito.when(addressRepository.save(Mockito.any(Address.class)))
+                    .thenReturn(addressWithId);
+            Mockito.when(logService.success(Mockito.anyString()))
+                    .thenReturn(Log.builder().build());
+
+            Address result = addressService.registerAdress(address);
+
+            assertEquals(addressWithId.getId(), result.getId());
         }
     }
 

@@ -30,12 +30,12 @@ public class AddressService {
     }
 
     public Address registerAdress(Address address) {
-        addressRepository.save(address);
+        Address savedAddress = addressRepository.save(address);
 
-        String logDescription = "O endereço com id " + address.getId() + " foi registrado.";
+        String logDescription = "O endereço com id " + savedAddress.getId() + " foi registrado.";
         logService.success(logDescription);
 
-        return address;
+        return savedAddress;
     }
 
     public AddressResponse getAddressById(Long id) {
@@ -43,5 +43,22 @@ public class AddressService {
                 .orElseThrow(() -> new EntityNotFoundException("Endereço com id " + id + " não encontrado."));
 
         return adressMapper.map(address);
+    }
+
+    public Address updateAddressById(Long addressId, AddressRegisterRequest newAddressInfo) {
+        boolean addressExists = addressRepository.existsById(addressId);
+
+        if (!addressExists) {
+            throw new EntityNotFoundException("Endereço não encontrado");
+        }
+
+        Address addressWithNewInfo = adressMapper.map(newAddressInfo);
+        addressWithNewInfo.setId(addressId);
+
+        addressRepository.save(addressWithNewInfo);
+
+        logService.success("O endereço com id " + addressId + " foi atualizado");
+
+        return addressWithNewInfo;
     }
 }

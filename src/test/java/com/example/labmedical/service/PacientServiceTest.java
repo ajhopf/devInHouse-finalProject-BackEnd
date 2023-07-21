@@ -2,6 +2,7 @@ package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AddressRegisterRequest;
 import com.example.labmedical.controller.dtos.request.PacientRegisterRequest;
+import com.example.labmedical.controller.dtos.request.PacientUpdateRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.controller.mapper.PacientMapper;
 import com.example.labmedical.exceptions.PacientAlreadyRegisteredException;
@@ -9,6 +10,7 @@ import com.example.labmedical.repository.PacientRepository;
 import com.example.labmedical.repository.model.Address;
 import com.example.labmedical.repository.model.Log;
 import com.example.labmedical.repository.model.Pacient;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 class PacientServiceTest {
@@ -279,6 +283,87 @@ class PacientServiceTest {
             Boolean result = pacientService.checkIfPacientExists(request);
 
             assertTrue(result);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of updatePacient method")
+    class updatePacientTests {
+        @Test
+        @DisplayName("When pacient is not found, it should throw EntityNotFoundException")
+        void test1() {
+            assertThrows(EntityNotFoundException.class,
+                    () ->  pacientService.updatePacient(PacientUpdateRequest.builder().build(), Mockito.anyLong()));
+        }
+
+        @Test
+        @DisplayName("When request has alergies, it should delete all pacient alergies and save new alergies")
+        void test2() {
+            Address address = Address.builder().id(1L).build();
+            Pacient pacient = Pacient.builder()
+                    .cpf("12345")
+                    .rg("9090")
+                    .address(address)
+                    .build();
+            PacientResponse pacientResponse = PacientResponse.builder().build();
+            PacientUpdateRequest pacientUpdateRequest = PacientUpdateRequest.builder().build();
+            pacientUpdateRequest.setAlergies(List.of("alergy1", "alergy2"));
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(pacient));
+            doNothing().when(alergyService).registerAlergy(Mockito.any(Pacient.class), Mockito.anyString());
+            Mockito.when(addressService.updateAddressById(Mockito.anyLong(), Mockito.any(AddressRegisterRequest.class)))
+                    .thenReturn(address);
+            Mockito.when(pacientMapper.map(Mockito.any(PacientUpdateRequest.class)))
+                    .thenReturn(pacient);
+            Mockito.when(pacientRepository.save(Mockito.any(Pacient.class)))
+                            .thenReturn(Pacient.builder().build());
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class)))
+                            .thenReturn(pacientResponse);
+            Mockito.when(logService.success(Mockito.anyString()))
+                    .thenReturn(Log.builder().build());
+
+            pacientService.updatePacient(pacientUpdateRequest, 1L);
+
+            Mockito.verify(alergyService, times(1))
+                    .deleteAllPacientAlergies(Mockito.anyLong());
+            Mockito.verify(alergyService, times(2))
+                    .registerAlergy(Mockito.any(Pacient.class), Mockito.anyString());
+        }
+
+        @Test
+        @DisplayName("When request has specialCares, it should delete all pacient specialCares and save new special cares")
+        void test3() {
+            Address address = Address.builder().id(1L).build();
+            Pacient pacient = Pacient.builder()
+                    .cpf("12345")
+                    .rg("9090")
+                    .address(address)
+                    .build();
+            PacientResponse pacientResponse = PacientResponse.builder().build();
+            PacientUpdateRequest pacientUpdateRequest = PacientUpdateRequest.builder().build();
+            pacientUpdateRequest.setSpecialCare(List.of("special", "care", "one more"));
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(pacient));
+            doNothing().when(specialCareService).registerSpecialCare(Mockito.any(Pacient.class), Mockito.anyString());
+            Mockito.when(addressService.updateAddressById(Mockito.anyLong(), Mockito.any(AddressRegisterRequest.class)))
+                    .thenReturn(address);
+            Mockito.when(pacientMapper.map(Mockito.any(PacientUpdateRequest.class)))
+                    .thenReturn(pacient);
+            Mockito.when(pacientRepository.save(Mockito.any(Pacient.class)))
+                    .thenReturn(Pacient.builder().build());
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class)))
+                    .thenReturn(pacientResponse);
+            Mockito.when(logService.success(Mockito.anyString()))
+                    .thenReturn(Log.builder().build());
+
+            pacientService.updatePacient(pacientUpdateRequest, 1L);
+
+            Mockito.verify(specialCareService, times(1))
+                    .deleteAllPacientSpecialCares(Mockito.anyLong());
+            Mockito.verify(specialCareService, times(3))
+                    .registerSpecialCare(Mockito.any(Pacient.class), Mockito.anyString());
         }
     }
 

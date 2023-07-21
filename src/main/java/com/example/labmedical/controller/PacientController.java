@@ -1,6 +1,7 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.PacientRegisterRequest;
+import com.example.labmedical.controller.dtos.request.PacientUpdateRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.service.PacientService;
 import jakarta.validation.Valid;
@@ -37,6 +38,17 @@ public class PacientController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(pacient);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PacientResponse> updatePacient(
+            @PathVariable Long id,
+            @RequestBody @Valid PacientUpdateRequest request
+            ) {
+
+        PacientResponse pacient = pacientService.updatePacient(request, id);
+
+        return ResponseEntity.ok(pacient);
     }
 
 }

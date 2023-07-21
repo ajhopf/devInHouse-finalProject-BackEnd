@@ -1,6 +1,6 @@
 package com.example.labmedical.controller.dtos.response;
 
-import com.example.labmedical.repository.model.Pacient;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +16,13 @@ import java.time.LocalTime;
 public class AppointmentResponse {
     private Long id;
     private String appointmentReason;
-    private LocalDate date;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate appointmentDate;
     private LocalTime time;
     private String problemDescription;
     //todo
     //private Medication medication;
     private String dosageAndPrecautions;
     private Boolean isActive;
-    private Pacient pacient;
+    private Long pacientId;
 }

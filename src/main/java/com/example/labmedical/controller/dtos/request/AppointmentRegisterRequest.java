@@ -22,7 +22,7 @@ public class AppointmentRegisterRequest {
     private String appointmentReason;
     @NotNull(message = "É necessário inserir uma data para a consulta.")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate date;
+    private LocalDate appointmentDate;
     @NotNull(message = "É necessário inserir um horário.")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime time;

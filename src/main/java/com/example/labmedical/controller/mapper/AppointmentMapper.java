@@ -4,10 +4,13 @@ import com.example.labmedical.controller.dtos.request.AppointmentRegisterRequest
 import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.repository.model.Appointment;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AppointmentMapper {
+    @Mapping(target = "pacient.id", source = "pacientId")
     Appointment map(AppointmentRegisterRequest source);
+    @Mapping(target = "pacientId", source = "pacient.id")
     AppointmentResponse map(Appointment source);
 }

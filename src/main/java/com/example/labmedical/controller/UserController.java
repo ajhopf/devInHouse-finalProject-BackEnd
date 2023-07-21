@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class UserController {
     }
 
     @PutMapping("atualizar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> userUpdate(
            @Valid @PathVariable Long id, @RequestBody UserRegisterRequest request
     ){
@@ -51,6 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping("deletar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> userDelete(
             @Valid @PathVariable Long id
     ){

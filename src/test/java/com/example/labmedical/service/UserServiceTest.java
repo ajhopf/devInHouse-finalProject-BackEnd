@@ -361,10 +361,12 @@ class UserServiceTest {
     @DisplayName("Test remove user feature")
     class deleteUserFeatureTest{
         @Test
+        @DisplayName("When user not find, it should throws exception")
         void test1() {
             assertThrows(UserException.class, () -> userService.deleteUser(Mockito.anyLong()));
         }
         @Test
+        @DisplayName("When user is find, it should delete from database")
         void test2() {
             User user = User.builder()
                     .id(1L)

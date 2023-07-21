@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +68,76 @@ class PacientServiceTest {
         void test2() {
             List<PacientResponse> result = pacientService.getPacients();
             assertEquals(0, result.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of getPacientById method")
+    class getPacientByIdTest {
+        @Test
+        @DisplayName("When pacient is found with given id, it should return the patient")
+        void test1() {
+            PacientResponse pacientResponse = PacientResponse.builder().id(1L).name("Andre").build();
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Pacient.builder().build()));
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class)))
+                    .thenReturn(pacientResponse);
+            Mockito.when(alergyService.getAllPacientAlergies(Mockito.anyLong()))
+                    .thenReturn(new ArrayList<>());
+            Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
+                    .thenReturn(new ArrayList<>());
+
+            PacientResponse result = pacientService.getPacientById(1L);
+
+            assertEquals("Andre", result.getName());
+            assertEquals(1L, result.getId());
+        }
+
+        @Test
+        @DisplayName("When pacient is found with given id and has alergies, it should return the patient infos with alergies list")
+        void test2() {
+            PacientResponse pacientResponse = PacientResponse.builder().id(1L).name("Andre").build();
+            List<String> pacientAlergies = List.of("alergia", "outra alergia");
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Pacient.builder().build()));
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class)))
+                    .thenReturn(pacientResponse);
+            Mockito.when(alergyService.getAllPacientAlergies(Mockito.anyLong()))
+                    .thenReturn(pacientAlergies);
+            Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
+                    .thenReturn(new ArrayList<>());
+
+            PacientResponse result = pacientService.getPacientById(1L);
+
+            assertEquals(pacientAlergies, result.getAlergies());
+        }
+
+        @Test
+        @DisplayName("When pacient is found with given id and has special care, it should return the patient infos with special care list")
+        void test3() {
+            PacientResponse pacientResponse = PacientResponse.builder().id(1L).name("Andre").build();
+            List<String> pacientSpecialCares = List.of("cuidado especial");
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Pacient.builder().build()));
+            Mockito.when(pacientMapper.map(Mockito.any(Pacient.class)))
+                    .thenReturn(pacientResponse);
+            Mockito.when(alergyService.getAllPacientAlergies(Mockito.anyLong()))
+                    .thenReturn(new ArrayList<>());
+            Mockito.when(specialCareService.getAllPacientSpecialCares(Mockito.anyLong()))
+                    .thenReturn(pacientSpecialCares);
+
+            PacientResponse result = pacientService.getPacientById(1L);
+
+            assertEquals(pacientSpecialCares, result.getSpecialCare());
+        }
+
+        @Test
+        @DisplayName("When no pacient is found with given id, it should throw EntityNotFoundException")
+        void test4() {
+            assertThrows(EntityNotFoundException.class, () -> pacientService.getPacientById(Mockito.anyLong()));
         }
     }
 

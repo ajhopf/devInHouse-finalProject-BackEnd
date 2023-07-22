@@ -40,4 +40,6 @@ public class UserRegisterRequest {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String photoUrl;
+
 }

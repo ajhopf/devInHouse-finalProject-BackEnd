@@ -104,9 +104,17 @@ public class UserService {
         if (!canUpdateRole) {
             throw new UserException("Não é possível modificar para esse tipo de usuário");
         }
-        User newUser = userMapper.map(request);
-        newUser.setId(user.getId());
-        newUser.setCpf(user.getCpf());
+        User newUser = User.builder()
+                .id(user.getId())
+                .name(request.getName())
+                .gender(request.getGender())
+                .email(request.getEmail())
+                .cpf(user.getCpf())
+                .password(request.getPassword())
+                .telephone(request.getTelephone())
+                .photoUrl(request.getPhotoUrl())
+                .role(request.getRole())
+                .build();
         userRepository.save(newUser);
         logService.success(String.format("Usuário id: %d atualizado", user.getId()));
         return "Usuário atualizado com sucesso";

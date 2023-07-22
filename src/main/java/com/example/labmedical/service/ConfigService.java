@@ -33,4 +33,8 @@ public class ConfigService {
         log.info("Configuração de sistema recuperada com sucesso.");
         return om.readValue(config.getValue(), SystemConfigResponse.class);
     }
+
+    public void resetSystemConfig() {
+        configRepository.deleteById("systemConfig");
+    }
 }

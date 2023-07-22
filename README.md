@@ -172,7 +172,7 @@ Exemplo de requisição:
 
 ```
 ```
-Descrição: Este endpoint permite atualizar a identidade visual do sistema.
+Descrição: Este endpoint permite buscar identidade visual do sistema.
 
 Autor: Leandro da Silva
 
@@ -191,7 +191,18 @@ Exemplo reposta:
     "fontColor": "Cor da fonte"
   }
 ```
+```
+Descrição: Este endpoint permite resetar a identidade visual do sistema.
 
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/config/sistema/resetar
+  Método HTTP: POST
+  Auteticado: Sim
+  Roles: Admin
+ 
+```
 
 
 

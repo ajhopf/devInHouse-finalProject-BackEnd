@@ -1,10 +1,9 @@
 # M3-Projeto-2-DevinHouse
 
-Essa API é um sistema de gestão de médico desenvolvido para gestão hospitalar. Este software tem como objetivo otimizar o processo de gerenciamento
+Essa API é um sistema de gestão hospitalar. Este software tem como objetivo otimizar o processo de gerenciamento
 
 - [Tecnologias](#tech)
 - [Como Iniciar](#start)
-- [Qual o problema ele resolve](#why)
 - [Melhorias](#melhorias)
 - [Como usar](#usar)
   <a id="tech"></a>
@@ -66,11 +65,115 @@ $ java -jar .\m3p1-0.0.1-SNAPSHOT.jar
 # Agora so clicar no canto direito superior no botao de iniciar
 ```
 
+<a id="melhorias"></a>
+# Melhorias Futuras
+- Adicionar RefreshToken para oferecer uma melhor segurança
+- Adicionar bcrypt e uuid dos token para uma melhor privacidade dos dados dos usuarios
+- Proteção contra ataques como injeção de SQL ou XSS, e garantindo que as dependências do projeto estejam atualizadas para mitigar vulnerabilidades conhecidas.
+
 <a id="usar"></a>
 # Como usar
 #### Poderia utilizar o swagger acessando esse link.
 http://localhost:8080/api/docs
-<a id="why"></a>
-# Melhorias Futuras
+
+## Descrição dos endpoints
+
+
+```
+Descrição: Este endpoint permite realizar a busca de todos os logs.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/logs/listar
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin
+  Parâmetros:
+    Headers:
+      `page` (opcional): Esse parametro define qual pagina vai ser retornada.
+      `page-size` (opcional): Esse parametro define quantos registros vão ser retornados por pagina.
+
+
+Exemplo de resposta:
+  {
+  "totalElements": 0,
+  "totalPages": 0,
+  "size": 0,
+  "content": [
+    {
+      "id": 0,
+      "description": "string",
+      "createdDate": "2023-07-22T19:49:48.521Z",
+      "logType": "SUCCESS",
+      "logOrigin": "FRONT_END"
+    }
+  ],
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "first": true,
+  "last": true,
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "pageNumber": 0,
+    "pageSize": 0,
+    "unpaged": true,
+    "paged": true
+  },
+  "empty": true
+}
+```
+
+```
+Descrição: Este endpoint permite realizar cadastro de log.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/logs/cadastrar
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: qualquer
+  Corpo:
+    {
+      "description": "Descrição do log",
+      "logType": "SUCCESS, INFO, ERROR"
+    }
+
+```
+```
+Descrição: Este endpoint permite atualizar a identidade visual do sistema.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/config/sistema
+  Método HTTP: POST
+  Auteticado: Sim
+  Roles: Admin
+  Corpo:
+    {
+      "companyName": "Nome da empresa",
+      "logoUrl": "Url sendo na web ou no formato base64",
+      "primaryColor": "Cor primaria",
+      "secondaryColor": "Cor segundaria",
+      "fontColor": "Cor da fonte"
+    }
+
+```
+
+
+
+
 
 

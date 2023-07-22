@@ -3,10 +3,12 @@ package com.example.labmedical.controller.dtos.request;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 @Data
+@Builder
 public class SystemConfigRequest {
     @Size(min = 4, max = 20, message = "O nome da empresa tem que ter entre 4 e 20 caracteres.")
     private String companyName;

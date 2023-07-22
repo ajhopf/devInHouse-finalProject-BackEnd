@@ -171,6 +171,26 @@ Exemplo de requisição:
     }
 
 ```
+```
+Descrição: Este endpoint permite atualizar a identidade visual do sistema.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/config/sistema
+  Método HTTP: GET
+  Auteticado: não
+  Roles: qualquer
+  
+Exemplo reposta:
+  {
+    "companyName": "Nome da empresa",
+    "logoUrl": "Url sendo na web ou no formato base64",
+    "primaryColor": "Cor primaria",
+    "secondaryColor": "Cor segundaria",
+    "fontColor": "Cor da fonte"
+  }
+```
 
 
 

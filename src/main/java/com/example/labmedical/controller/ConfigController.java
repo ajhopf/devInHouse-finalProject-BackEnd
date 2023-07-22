@@ -1,6 +1,7 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.SystemConfigRequest;
+import com.example.labmedical.controller.dtos.response.SystemConfigResponse;
 import com.example.labmedical.service.ConfigService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
@@ -24,6 +25,12 @@ public class ConfigController {
     ) throws JsonProcessingException {
         configService.saveSystemConfig(config);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping ("/sistema")
+    public ResponseEntity<SystemConfigResponse> getSystem(
+    ) throws JsonProcessingException {
+        return ResponseEntity.ok().body(configService.getSystemConfig());
     }
 
 }

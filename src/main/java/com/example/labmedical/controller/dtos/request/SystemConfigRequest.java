@@ -20,7 +20,7 @@ public class SystemConfigRequest {
     private String primaryColor;
     @NotEmpty(message = "A cor segundaria não pode ser vazia")
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "A cor da fonte deve estar no formato hexadecimal")
-    private String secundaryColor;
+    private String secondaryColor;
     @NotEmpty(message = "A cor da fonte não pode ser vazia")
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "A cor da fonte deve estar no formato hexadecimal")
     private String fontColor;

@@ -20,7 +20,7 @@ public class ConfigController {
 
     @PostMapping ("/sistema")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> createSystem(
+    public ResponseEntity<Void> createSystemConfig(
            @Valid @RequestBody SystemConfigRequest config
     ) throws JsonProcessingException {
         configService.saveSystemConfig(config);
@@ -28,9 +28,16 @@ public class ConfigController {
     }
 
     @GetMapping ("/sistema")
-    public ResponseEntity<SystemConfigResponse> getSystem(
+    public ResponseEntity<SystemConfigResponse> getSystemConfig(
     ) throws JsonProcessingException {
         return ResponseEntity.ok().body(configService.getSystemConfig());
     }
 
+    @PostMapping ("/sistema/resetar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> resetSystemConfig(
+    ){
+        configService.resetSystemConfig();
+        return ResponseEntity.ok().build();
+    }
 }

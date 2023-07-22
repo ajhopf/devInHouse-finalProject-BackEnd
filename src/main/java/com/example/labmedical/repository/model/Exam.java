@@ -16,19 +16,20 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class Exam {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(name = "exam_date", nullable = false)
     private LocalDate date;
     @Column(nullable = false)
-    private LocalTime hour;
-    @Column(nullable = false)
+    private LocalTime time;
+    @Column(name = "exam_type",nullable = false)
     private String type;
     @Column(nullable = false)
     private String laboratory;
+    @Column(name = "document_url")
     private String documentUrl;
     @Column(nullable = false)
     private String result;

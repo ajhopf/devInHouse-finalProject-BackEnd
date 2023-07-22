@@ -1,9 +1,11 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.ResetUserPasswordRequest;
-import com.example.labmedical.controller.dtos.request.UserListResponse;
+import com.example.labmedical.controller.dtos.response.UserResponse;
 import com.example.labmedical.controller.dtos.request.UserRegisterRequest;
 import com.example.labmedical.controller.dtos.response.UserIdByEmailResponse;
+import com.example.labmedical.controller.mapper.UserMapper;
+import com.example.labmedical.controller.mapper.UserResponseMapper;
 import com.example.labmedical.enums.Role;
 
 import com.example.labmedical.exceptions.UserException;
@@ -28,6 +30,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceTest {
@@ -39,6 +42,10 @@ class UserServiceTest {
     private UserRepository userRepository;
     @InjectMocks
     private UserService userService;
+    @Mock
+    private UserResponseMapper userResponseMapper;
+    @Mock
+    private UserMapper userMapper;
 
     @Nested
     @DisplayName("Tests of getUserIdByEmail method")
@@ -186,6 +193,16 @@ class UserServiceTest {
                     .role(Role.ROLE_ADMIN)
                     .build();
             Mockito.when(userRepository.existsByEmailOrCpf(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+            User user = User.builder()
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .build();
+            when(userMapper.map(request)).thenReturn(user);
             User result = userService.saveUser(request);
             assertEquals(result.getName(), result.getName());
         }
@@ -262,7 +279,15 @@ class UserServiceTest {
             List<User> list = new ArrayList<>();
             list.add(user);
             Mockito.when(userRepository.findAll()).thenReturn(list);
-            List<UserListResponse> response = userService.getListUsers();
+            UserResponse userResponse = UserResponse.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            when(userResponseMapper.map(user)).thenReturn(userResponse);
+            List<UserResponse> response = userService.getListUsers();
             assertTrue(response.size() > 0);
             assertEquals(user.getName(), response.get(0).getName());
         }
@@ -356,5 +381,38 @@ class UserServiceTest {
             assertEquals("Usuário atualizado com sucesso", response);
         }
     }
+
+    @Nested
+    @DisplayName("Test search user feature")
+    class searchUserFeatureTest{
+        @Test
+        @DisplayName("When user is not found, it should throw UserException")
+        void test1() {
+            assertThrows(UserException.class, () -> userService.userSearch(Mockito.anyLong()));
+        }
+        @Test
+        @DisplayName("When user is not found, it should throw UserException")
+        void test2() {
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+            UserResponse userResponse = UserResponse.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            when(userResponseMapper.map(user)).thenReturn(userResponse);
+            UserResponse response = userService.userSearch(user.getId());
+            assertEquals(userResponse, response);
+        }
+    }
+
 }
 

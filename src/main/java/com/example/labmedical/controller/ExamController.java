@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/exames")
@@ -32,6 +33,15 @@ public class ExamController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(exam);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ExamResponse>> getExams(
+            @RequestParam(required = false) Long pacientId
+    ) {
+        List<ExamResponse> examList = examService.getExams(pacientId);
+
+        return ResponseEntity.ok(examList);
     }
 
 }

@@ -16,15 +16,19 @@ public class ConfigService {
     private ConfigRepository configRepository;
     @Autowired
     private ObjectMapper om;
+    @Autowired
+    private LogService log;
     public SystemConfigResponse saveSystemConfig(SystemConfigRequest system) throws JsonProcessingException {
         var config = new Config("systemConfig", om.writeValueAsString(system));
         configRepository.save(config);
+        log.info("Configuração de sistema alterada com sucesso.");
         return om.readValue(config.getValue(), SystemConfigResponse.class);
     }
 
     public SystemConfigResponse getSystemConfig() throws JsonProcessingException {
         Config config = configRepository.findById("systemConfig")
                         .orElseThrow(() -> new ConfigNotFoundException("systemConfig not found"));
+        log.info("Configuração de sistema recuperada com sucesso.");
         return om.readValue(config.getValue(), SystemConfigResponse.class);
     }
 }

@@ -18,6 +18,7 @@ public class ConfigService {
     private ObjectMapper om;
     @Autowired
     private LogService log;
+
     public SystemConfigResponse saveSystemConfig(SystemConfigRequest system) throws JsonProcessingException {
         var config = new Config("systemConfig", om.writeValueAsString(system));
         configRepository.save(config);
@@ -27,8 +28,9 @@ public class ConfigService {
 
     public SystemConfigResponse getSystemConfig() throws JsonProcessingException {
         Config config = configRepository.findById("systemConfig")
-                        .orElseThrow(() -> new ConfigNotFoundException("systemConfig not found"));
-        log.info("Configuração de sistema recuperada com sucesso.");
+                .orElseGet(() -> configRepository.findById("systemConfigDefault")
+                        .orElseThrow(() -> new ConfigNotFoundException("Nenhuma configuração encontrada")));
+        log.info("Configuração de sistema recuperada com sucesso.");
         return om.readValue(config.getValue(), SystemConfigResponse.class);
     }
 }

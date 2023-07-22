@@ -10,7 +10,7 @@ public class SystemConfigResponse {
     private String companyName;
     private String logoUrl;
     private String primaryColor;
-    private String secundaryColor;
+    private String secondaryColor;
     private String fontColor;
 
 }

@@ -43,9 +43,7 @@ public class ExamService {
 
        examRepository.save(examWithNewInfo);
        logService.success(String.format("O exame id: %d foi atualiza", examId));
-
-       ExamResponse examResponse = examMapper.map(examWithNewInfo);
-
-       return examResponse;
+        ExamResponse response = examMapper.map(examWithNewInfo);
+        return response;
     }
 }

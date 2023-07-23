@@ -57,4 +57,19 @@ public class MedicineService {
         medicineRepository.delete(medicine);
     }
 
+    public MedicineResponse updateMedicine(Long medicineId, MedicineRegisterRequest newMedicine) {
+        boolean medicineExists = medicineRepository.existsById(medicineId);
+
+        if(!medicineExists) {
+            throw new EntityNotFoundException(String.format("Medicamento id: %d não encontrado",medicineId));
+        }
+        Medicine currentMedicine = medicineRepository.findById(medicineId).get();
+        medicineMapper.update(currentMedicine,newMedicine);
+
+        medicineRepository.save(currentMedicine);
+        logService.success(String.format("O medicamento id: %d foi atualiza", medicineId));
+        MedicineResponse response = medicineMapper.map(currentMedicine);
+        return response;
+    }
+
 }

@@ -46,4 +46,10 @@ public class MedicineController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<MedicineResponse> updateMedicine(@PathVariable Long id, @RequestBody MedicineRegisterRequest request){
+        MedicineResponse medicineResponse = medicineService.updateMedicine(id,request);
+        return ResponseEntity.ok(medicineResponse);
+    }
+
 }

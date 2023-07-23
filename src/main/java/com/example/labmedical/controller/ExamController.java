@@ -2,6 +2,7 @@ package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.AppointmentRegisterRequest;
 import com.example.labmedical.controller.dtos.request.ExamRequest;
+import com.example.labmedical.controller.dtos.request.ExamUpdate;
 import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.dtos.response.ExamResponse;
 import com.example.labmedical.service.ExamService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/exames")
@@ -40,6 +42,23 @@ public class ExamController {
         examService.deleteExam(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+    @PutMapping("atualizar/{id}")
+    public ResponseEntity<ExamResponse> updateExam(
+            @PathVariable Long id,
+            @RequestBody ExamUpdate request
+    ){
+        ExamResponse exam = examService.updateExam(id, request);
+        return ResponseEntity.ok(exam);
+    }
+  
+    @GetMapping
+    public ResponseEntity<List<ExamResponse>> getExams(
+            @RequestParam(required = false) Long pacientId
+    ) {
+        List<ExamResponse> examList = examService.getExams(pacientId);
+
+        return ResponseEntity.ok(examList);
     }
 
 }

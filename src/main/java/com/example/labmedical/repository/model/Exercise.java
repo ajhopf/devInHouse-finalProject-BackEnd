@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Table(name = "exercises")
@@ -27,6 +26,7 @@ public class Exercise {
     private LocalDate dateCreated;
     private LocalTime timeCreated;
     private String description;
+    private String exerciseSeriesName;
     private boolean status;
     @ManyToOne
     @JoinColumn(name = "user_id")

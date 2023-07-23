@@ -89,4 +89,11 @@ public class ErrorHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(PatientNotFountException.class)
+    public ResponseEntity<Map<String, String>> patientNotFound(PatientNotFountException e) {
+        logger.error("Tentiva de requisição com parametros inválidos.");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("Erro", e.getMessage()));
+    }
 }

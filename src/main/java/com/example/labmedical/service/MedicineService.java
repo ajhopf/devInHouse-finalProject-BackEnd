@@ -1,12 +1,16 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.MedicineRegisterRequest;
+import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.dtos.response.MedicineResponse;
 import com.example.labmedical.controller.mapper.MedicineMapper;
 import com.example.labmedical.repository.MedicineRepository;
+import com.example.labmedical.repository.model.Appointment;
 import com.example.labmedical.repository.model.Medicine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MedicineService {
@@ -29,6 +33,22 @@ public class MedicineService {
         logService.success("Medicação registrada. Id medicação: " + medicine.getId() + "; Id Paciente: " + medicine.getPacient().getId());
 
         return medicineMapper.map(medicine);
+    }
+
+    public List<MedicineResponse> getMedicines(Long pacientId) {
+        List<Medicine> medicineList;
+
+        if (pacientId != null) {
+            pacientService.getPacientById(pacientId);
+
+            medicineList = medicineRepository.getMedicinesByPacient_Id(pacientId);
+            logService.success("Busca de lista de medicamentos do paciente " + pacientId + " realizada.");
+        } else {
+            medicineList = medicineRepository.findAll();
+            logService.success("Busca de lista de medicamentos de todos pacientes realizada.");
+        }
+
+        return medicineMapper.map(medicineList);
     }
 
 }

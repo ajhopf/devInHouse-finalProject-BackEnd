@@ -1,19 +1,18 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.MedicineRegisterRequest;
+import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.dtos.response.MedicineResponse;
 import com.example.labmedical.service.MedicineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/medicamentos")
@@ -32,6 +31,13 @@ public class MedicineController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(medicine);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MedicineResponse>> getMedicines(@RequestParam(required = false) Long pacientId) {
+        List<MedicineResponse> medicineResponseList = medicineService.getMedicines(pacientId);
+
+        return ResponseEntity.ok(medicineResponseList);
     }
 
 }

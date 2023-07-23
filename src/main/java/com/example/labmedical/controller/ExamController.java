@@ -8,6 +8,7 @@ import com.example.labmedical.service.ExamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -32,6 +33,13 @@ public class ExamController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(exam);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
+        examService.deleteExam(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
 }

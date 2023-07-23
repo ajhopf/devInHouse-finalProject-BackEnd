@@ -1,12 +1,11 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.MedicineRegisterRequest;
-import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.dtos.response.MedicineResponse;
 import com.example.labmedical.controller.mapper.MedicineMapper;
 import com.example.labmedical.repository.MedicineRepository;
-import com.example.labmedical.repository.model.Appointment;
 import com.example.labmedical.repository.model.Medicine;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +48,13 @@ public class MedicineService {
         }
 
         return medicineMapper.map(medicineList);
+    }
+
+    public void deleteMedicine(Long medicineId) {
+        Medicine medicine = medicineRepository.findById(medicineId)
+                .orElseThrow(() -> new EntityNotFoundException("Medicamento com id " + medicineId + " não encontrada."));
+
+        medicineRepository.delete(medicine);
     }
 
 }

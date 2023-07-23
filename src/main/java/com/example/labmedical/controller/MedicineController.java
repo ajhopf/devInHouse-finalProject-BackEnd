@@ -1,7 +1,6 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.MedicineRegisterRequest;
-import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.dtos.response.MedicineResponse;
 import com.example.labmedical.service.MedicineService;
 import jakarta.validation.Valid;
@@ -38,6 +37,13 @@ public class MedicineController {
         List<MedicineResponse> medicineResponseList = medicineService.getMedicines(pacientId);
 
         return ResponseEntity.ok(medicineResponseList);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMedicine(@PathVariable Long id) {
+        medicineService.deleteMedicine(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

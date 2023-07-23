@@ -33,6 +33,12 @@ public class ExamService {
         return examMapper.map(exam);
     }
 
+    public void deleteExam(Long examId) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Exame com id %d não encontrado.", examId)));
+        logService.success(String.format("Exame id: %d removido", examId));
+        examRepository.delete(exam);
+    }
     public ExamResponse updateExam(Long examId, ExamUpdate newExam) {
        boolean examExist = examRepository.existsById(examId);
 

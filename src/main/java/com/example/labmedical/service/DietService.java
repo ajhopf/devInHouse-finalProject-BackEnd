@@ -5,6 +5,7 @@ import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.controller.mapper.DietMapper;
 import com.example.labmedical.repository.DietRepository;
 import com.example.labmedical.repository.model.Diet;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,14 @@ public class DietService {
         logService.success("Dieta criada. Id paciente: " + diet.getPacient().getId() + ". Id dieta: " + diet.getId());
 
         return dietMapper.map(diet);
+    }
+
+    public void deleteDiet(Long id) {
+        dietRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Dieta com id " + id + " não encontrada."));
+
+        dietRepository.deleteById(id);
+
+        logService.success("Dieta deletada. Id: " + id);
     }
 }

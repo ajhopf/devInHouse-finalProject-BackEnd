@@ -44,6 +44,7 @@ public class UserController {
     }
 
     @PutMapping("atualizar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> userUpdate(
            @Valid @PathVariable Long id, @RequestBody UserRegisterRequest request
     ){
@@ -60,4 +61,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("deletar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> userDelete(
+            @Valid @PathVariable Long id
+    ){
+        String response = userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

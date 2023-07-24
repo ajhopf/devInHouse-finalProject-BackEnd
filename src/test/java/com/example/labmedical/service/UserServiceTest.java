@@ -377,6 +377,17 @@ class UserServiceTest {
                     .role(Role.ROLE_NURSE)
                     .build();
             Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+            User newUser = User.builder()
+                    .id(1l)
+                    .name("André")
+                    .gender("Masculino")
+                    .telephone("(48) 9 9999-9999")
+                    .cpf("111.222.333-44")
+                    .email("email@example.com")
+                    .password("1234")
+                    .role(Role.ROLE_DOCTOR)
+                    .build();
+            when(userMapper.map(request)).thenReturn(newUser);
             String response = userService.updateUser(1l, request);
             assertEquals("Usuário atualizado com sucesso", response);
         }
@@ -414,5 +425,31 @@ class UserServiceTest {
         }
     }
 
+
+    @Nested
+    @DisplayName("Test remove user feature")
+    class deleteUserFeatureTest{
+        @Test
+        @DisplayName("When user not find, it should throws exception")
+        void test1() {
+            assertThrows(UserException.class, () -> userService.deleteUser(Mockito.anyLong()));
+        }
+        @Test
+        @DisplayName("When user is find, it should delete from database")
+        void test2() {
+            User user = User.builder()
+                    .id(1L)
+                    .name("André")
+                    .password("1234")
+                    .role(Role.ROLE_ADMIN)
+                    .email("example@example.com")
+                    .build();
+            Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+            String result = userService.deleteUser(1L);
+            assertEquals("Usuário removido com sucesso", result);
+            Mockito.verify(userRepository, Mockito.times(1)).deleteById(1L);
+            Mockito.verify(logService, Mockito.times(1)).success("Usuário ID: 1 removido");
+        }
+    }
 }
 

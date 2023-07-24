@@ -1,0 +1,40 @@
+package com.example.labmedical.service;
+
+import com.example.labmedical.controller.dtos.request.SystemConfigRequest;
+import com.example.labmedical.controller.dtos.response.SystemConfigResponse;
+import com.example.labmedical.exceptions.ConfigNotFoundException;
+import com.example.labmedical.repository.ConfigRepository;
+import com.example.labmedical.repository.model.Config;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ConfigService {
+    @Autowired
+    private ConfigRepository configRepository;
+    @Autowired
+    private ObjectMapper om;
+    @Autowired
+    private LogService log;
+
+    public SystemConfigResponse saveSystemConfig(SystemConfigRequest system) throws JsonProcessingException {
+        var config = new Config("systemConfig", om.writeValueAsString(system));
+        configRepository.save(config);
+        log.info("Configuração de sistema alterada com sucesso.");
+        return om.readValue(config.getValue(), SystemConfigResponse.class);
+    }
+
+    public SystemConfigResponse getSystemConfig() throws JsonProcessingException {
+        Config config = configRepository.findById("systemConfig")
+                .orElseGet(() -> configRepository.findById("systemConfigDefault")
+                        .orElseThrow(() -> new ConfigNotFoundException("Nenhuma configuração encontrada")));
+        log.info("Configuração de sistema recuperada com sucesso.");
+        return om.readValue(config.getValue(), SystemConfigResponse.class);
+    }
+
+    public void resetSystemConfig() {
+        configRepository.deleteById("systemConfig");
+    }
+}

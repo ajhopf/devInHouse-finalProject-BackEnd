@@ -4,6 +4,7 @@ package com.example.labmedical.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -36,6 +37,8 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/usuarios/login", "api/usuarios/{email}", "/api/usuarios/resetarsenha", "/swagger-ui/**", "/v3/api-docs/**", "/proxy/**", "/actuator/**", "/docs")
+                    .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/config/sistema")
                     .permitAll()
                 .anyRequest()
                     .authenticated()

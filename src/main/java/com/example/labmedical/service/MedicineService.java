@@ -50,11 +50,11 @@ public class MedicineService {
         return medicineMapper.map(medicineList);
     }
 
-    public MedicineResponse getMedicineById(Long medicineId) {
+    public Medicine getMedicineById(Long medicineId) {
         Medicine medicine = medicineRepository.findById(medicineId)
                 .orElseThrow(() -> new EntityNotFoundException("Medicamento com id " + medicineId + " não encontrada."));
 
-        return medicineMapper.map(medicine);
+        return medicine;
     }
 
     public void deleteMedicine(Long medicineId) {

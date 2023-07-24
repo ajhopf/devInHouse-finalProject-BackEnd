@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String email;
     private String photoUrl;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

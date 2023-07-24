@@ -34,4 +34,7 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Pacient pacient;
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    private Medicine medicine;
 }

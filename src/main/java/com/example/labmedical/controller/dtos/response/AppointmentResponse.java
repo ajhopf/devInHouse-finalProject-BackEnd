@@ -20,9 +20,8 @@ public class AppointmentResponse {
     private LocalDate appointmentDate;
     private LocalTime time;
     private String problemDescription;
-    //todo
-    //private Medication medication;
     private String dosageAndPrecautions;
     private Boolean isActive;
     private Long pacientId;
+    private Long medicineId;
 }

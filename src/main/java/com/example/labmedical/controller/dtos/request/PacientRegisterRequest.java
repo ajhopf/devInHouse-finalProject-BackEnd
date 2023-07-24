@@ -27,6 +27,8 @@ public class PacientRegisterRequest {
     @Pattern(regexp = "([0-9]{3}[.][0-9]{3}[.][0-9]{3}-[0-9]{2})", message = "CPF deve estar no formato 000.000.000-00")
     @NotBlank
     private String cpf;
+    @NotBlank
+    @Size( max= 20, message = "Rg deve ter no máximo 20 caracteres")
     private String rg;
     @NotNull(message = "É necessário inserir um estado civil.")
     private CivilStatus civilStatus;

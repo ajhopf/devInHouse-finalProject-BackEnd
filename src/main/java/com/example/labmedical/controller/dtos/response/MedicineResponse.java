@@ -22,7 +22,7 @@ public class MedicineResponse {
     private Long id;
     private String medicineName;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate date;
+    private LocalDate medicineDate;
     private LocalTime time;
     private MedicineType type;
     private Integer quantity;

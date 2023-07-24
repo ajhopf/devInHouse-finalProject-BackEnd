@@ -24,6 +24,7 @@ public interface ExamMapper {
     ExamResponse map(Exam source);
 
     @Mapping(target = "pacientId", source = "pacient.id")
-    List<ExamResponse> map(List<Exam> souce);
+    List<ExamResponse> map(List<Exam> source);
+
 
 }

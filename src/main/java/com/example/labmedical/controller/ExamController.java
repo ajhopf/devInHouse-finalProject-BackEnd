@@ -54,9 +54,10 @@ public class ExamController {
   
     @GetMapping
     public ResponseEntity<List<ExamResponse>> getExams(
-            @RequestParam(required = false) Long pacientId
+            @RequestParam(required = false) Long pacientId,
+            @RequestParam(required = false) String pacientName
     ) {
-        List<ExamResponse> examList = examService.getExams(pacientId);
+        List<ExamResponse> examList = examService.getExams(pacientId, pacientName);
 
         return ResponseEntity.ok(examList);
     }

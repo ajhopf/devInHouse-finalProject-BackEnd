@@ -20,6 +20,8 @@ public class AppointmentService {
     @Autowired
     private PacientService pacientService;
     @Autowired
+    private MedicineService medicineService;
+    @Autowired
     private LogService logService;
 
     public List<AppointmentResponse> getAppointments(Long pacientId) {
@@ -40,6 +42,7 @@ public class AppointmentService {
 
     public AppointmentResponse registerAppointment(AppointmentRegisterRequest request) {
         pacientService.getPacientById(request.getPacientId());
+        medicineService.getMedicineById(request.getMedicineId());
 
         Appointment appointment = appointmentMapper.map(request);
         appointmentRepository.save(appointment);

@@ -29,12 +29,11 @@ public class AppointmentRegisterRequest {
     @NotBlank
     @Size(min = 16, max = 1024, message = "'problemDescription' deve ter entre 16 e 1024 caracteres")
     private String problemDescription;
-    //todo
-    //private Medication medication;
     @NotBlank
     @Size(min = 16, max = 256, message = "'dosageAndPrecautions' deve ter entre 16 e 256 caracteres")
     private String dosageAndPrecautions;
     @NotNull
     private Boolean isActive;
     private Long pacientId;
+    private Long medicineId;
 }

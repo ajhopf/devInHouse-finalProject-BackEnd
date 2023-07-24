@@ -22,7 +22,7 @@ public class MedicineRegisterRequest {
     private String medicineName;
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate date;
+    private LocalDate medicineDate;
     @Column(nullable = false)
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime time;

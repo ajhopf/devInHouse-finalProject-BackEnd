@@ -54,5 +54,7 @@ public class AppointmentService {
                 .orElseThrow(() -> new EntityNotFoundException("Consulta com id " + appointmentId + " não encontrada."));
 
         appointmentRepository.delete(appointment);
+
+        logService.success("Consulta deletada. Id consulta: " + appointmentId);
     }
 }

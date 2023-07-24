@@ -5,7 +5,6 @@ import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.repository.model.Appointment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -18,10 +17,6 @@ public interface AppointmentMapper {
     @Mapping(target = "pacientId", source = "pacient.id")
     @Mapping(target = "medicineId", source = "medicine.id")
     AppointmentResponse map(Appointment source);
-
-    @Mapping(target = "pacient.id",source = "pacientId")
-    @Mapping(target = "medicine.id", source = "medicineId")
-    void update(@MappingTarget Appointment target, AppointmentRegisterRequest source);
 
     @Mapping(target = "pacientId", source = "pacient.id")
     @Mapping(target = "medicineId", source = "medicine.id")

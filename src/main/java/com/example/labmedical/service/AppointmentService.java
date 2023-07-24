@@ -73,10 +73,20 @@ public class AppointmentService {
         if(!appointmentExists) {
             throw new EntityNotFoundException(String.format("Consulta id: %d não encontrado",appointmentId));
         }
-        Appointment appointment = appointmentRepository.findById(appointmentId).get();
-        appointmentMapper.update(appointment, updatedAppointment);
+
+        pacientService.getPacientById(updatedAppointment.getPacientId());
+
+        Medicine medicine = null;
+        if (updatedAppointment.getMedicineId() != null) {
+            medicine = medicineService.getMedicineById(updatedAppointment.getMedicineId());
+        }
+
+        Appointment appointment = appointmentMapper.map(updatedAppointment);
+        appointment.setMedicine(medicine);
+        appointment.setId(appointmentId);
 
         appointmentRepository.save(appointment);
+
         logService.success(String.format("A consulta id: %d foi atualiza", appointmentId));
         AppointmentResponse response = appointmentMapper.map(appointment);
         return response;

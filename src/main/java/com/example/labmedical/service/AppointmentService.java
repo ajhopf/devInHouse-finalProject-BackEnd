@@ -5,6 +5,7 @@ import com.example.labmedical.controller.dtos.response.AppointmentResponse;
 import com.example.labmedical.controller.mapper.AppointmentMapper;
 import com.example.labmedical.repository.AppointmentRepository;
 import com.example.labmedical.repository.model.Appointment;
+import com.example.labmedical.repository.model.Medicine;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,9 +43,14 @@ public class AppointmentService {
 
     public AppointmentResponse registerAppointment(AppointmentRegisterRequest request) {
         pacientService.getPacientById(request.getPacientId());
-        medicineService.getMedicineById(request.getMedicineId());
+
+        Medicine medicine = null;
+        if (request.getMedicineId() != null) {
+            medicine = medicineService.getMedicineById(request.getMedicineId());
+        }
 
         Appointment appointment = appointmentMapper.map(request);
+        appointment.setMedicine(medicine);
         appointmentRepository.save(appointment);
 
         logService.success("Consulta registrada. Id consulta: " + appointment.getId() + "; Id Paciente: " + appointment.getPacient().getId());
@@ -59,5 +65,20 @@ public class AppointmentService {
         appointmentRepository.delete(appointment);
 
         logService.success("Consulta deletada. Id consulta: " + appointmentId);
+    }
+
+    public AppointmentResponse updateAppointment(Long appointmentId, AppointmentRegisterRequest updatedAppointment) {
+        boolean appointmentExists = appointmentRepository.existsById(appointmentId);
+
+        if(!appointmentExists) {
+            throw new EntityNotFoundException(String.format("Consulta id: %d não encontrado",appointmentId));
+        }
+        Appointment appointment = appointmentRepository.findById(appointmentId).get();
+        appointmentMapper.update(appointment, updatedAppointment);
+
+        appointmentRepository.save(appointment);
+        logService.success(String.format("A consulta id: %d foi atualiza", appointmentId));
+        AppointmentResponse response = appointmentMapper.map(appointment);
+        return response;
     }
 }

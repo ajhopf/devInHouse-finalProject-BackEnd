@@ -47,4 +47,12 @@ public class AppointmentController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AppointmentResponse> updateAppointment(
+            @PathVariable Long id,
+            @RequestBody AppointmentRegisterRequest request){
+        AppointmentResponse appointment = appointmentService.updateAppointment(id, request);
+        return ResponseEntity.ok(appointment);
+    }
 }

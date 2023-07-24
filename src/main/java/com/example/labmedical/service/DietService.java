@@ -16,12 +16,16 @@ public class DietService {
     private PacientService pacientService;
     @Autowired
     private DietMapper dietMapper;
+    @Autowired
+    private LogService logService;
 
     public DietResponse registerDiet(DietRegisterRequest dietRegisterRequest) {
         pacientService.getPacientById(dietRegisterRequest.getPacientId());
 
         Diet diet = dietMapper.map(dietRegisterRequest);
         dietRepository.save(diet);
+
+        logService.success("Dieta criada. Id paciente: " + diet.getPacient().getId() + ". Id dieta: " + diet.getId());
 
         return dietMapper.map(diet);
     }

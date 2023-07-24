@@ -4,17 +4,11 @@ package com.example.labmedical.service;
 import com.example.labmedical.controller.dtos.request.ExamRequest;
 import com.example.labmedical.controller.dtos.response.ExamResponse;
 import com.example.labmedical.controller.mapper.ExamMapper;
+import com.example.labmedical.exceptions.UserException;
 import com.example.labmedical.repository.ExamRepository;
 import com.example.labmedical.repository.model.Exam;
 import com.example.labmedical.repository.model.Pacient;
-import com.example.labmedical.controller.dtos.request.AddressRegisterRequest;
-import com.example.labmedical.controller.dtos.request.AppointmentRegisterRequest;
-import com.example.labmedical.controller.dtos.request.ExamRequest;
 import com.example.labmedical.controller.dtos.request.ExamUpdate;
-import com.example.labmedical.controller.dtos.response.AppointmentResponse;
-import com.example.labmedical.controller.dtos.response.ExamResponse;
-import com.example.labmedical.controller.mapper.ExamMapper;
-import com.example.labmedical.repository.ExamRepository;
 import com.example.labmedical.repository.model.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
@@ -83,7 +78,7 @@ class ExamServiceTest {
     @Nested
     @DisplayName("Test updateExame Method")
     class examExamMethod {
-=======
+
         @Test
         @DisplayName("When updating exam and examId is not found, it should throw EntityNotFoundException")
         void Test1() {
@@ -146,14 +141,24 @@ class ExamServiceTest {
             Mockito.when(examMapper.map(exams))
                     .thenReturn(examResponseList);
 
-            List<ExamResponse> result = examService.getExams(null);
+            List<ExamResponse> result = examService.getExams(null, null);
 
             assertEquals(2, result.size());
         }
 
         @Test
-        @DisplayName("When pacientId is present, it should return only that pacients exam")
+        @DisplayName("When pacientId is present but doesnt' have exam, it should throw UserExceptio")
         void test2() {
+            Mockito.when(pacientService.getPacientById(Mockito.anyLong()))
+                    .thenReturn(Pacient.builder().build());
+            Mockito.when(examRepository.getExamsByPacient_Id(Mockito.anyLong())).thenReturn(new ArrayList<>());
+
+            assertThrows(UserException.class, () -> examService.getExams(1L, null));
+        }
+
+        @Test
+        @DisplayName("When pacientId is present, it should return only that pacients exam")
+        void test3() {
             List<Exam> exams = List.of(
                     Exam.builder().build(),
                     Exam.builder().build()
@@ -171,19 +176,53 @@ class ExamServiceTest {
             Mockito.when(examMapper.map(exams))
                     .thenReturn(examResponseList);
 
-            List<ExamResponse> result = examService.getExams(1L);
+            List<ExamResponse> result = examService.getExams(1L, null);
+
+            assertEquals(2, result.size());
+        }
+
+        @Test
+        @DisplayName("When pacientName is present but doesnt' have exam, it should throw UserExceptio")
+        void test4() {
+            Mockito.when(examRepository.findExamsByPacientNameLike(Mockito.anyString())).thenReturn(new ArrayList<>());
+
+            assertThrows(UserException.class, () -> examService.getExams(null, "user"));
+        }
+
+        @Test
+        @DisplayName("When pacientName is present and have exam, it should return exam list")
+        void test5() {
+            List<Exam> exams = List.of(
+                    Exam.builder().build(),
+                    Exam.builder().build()
+            );
+
+            List<ExamResponse> examResponseList = List.of(
+                    ExamResponse.builder().build(),
+                    ExamResponse.builder().build()
+            );
+
+
+            Mockito.when(examRepository.findExamsByPacientNameLike(Mockito.anyString()))
+                    .thenReturn(exams);
+            Mockito.when(examMapper.map(exams))
+                    .thenReturn(examResponseList);
+
+            List<ExamResponse> result = examService.getExams(null, "user");
 
             assertEquals(2, result.size());
         }
 
         @Test
         @DisplayName("When pacientId is present and there is no pacient with given Id, it should throw EntityNotFoundException")
-        void test3() {
+        void test6() {
             Mockito.when(pacientService.getPacientById(Mockito.anyLong()))
                     .thenThrow(EntityNotFoundException.class);
 
-            assertThrows(EntityNotFoundException.class, () -> examService.getExams(1L));
+            assertThrows(EntityNotFoundException.class, () -> examService.getExams(1L, null));
         }
+
+
     }
         @Nested
     @DisplayName("Tests of deleteExam method")

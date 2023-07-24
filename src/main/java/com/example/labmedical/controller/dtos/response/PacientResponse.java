@@ -1,7 +1,6 @@
 package com.example.labmedical.controller.dtos.response;
 
 import com.example.labmedical.repository.model.Address;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,6 @@ public class PacientResponse {
     private Long id;
     private String name;
     private String gender;
-    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dob;
     private String cpf;
     private String rg;

@@ -33,9 +33,7 @@ public class DietRegisterRequest {
     private DietType dietType;
     private String description;
     @NotNull
-    private Boolean status;
+    private Boolean status = true;
     @NotNull
     private Long pacientId;
-
-
 }

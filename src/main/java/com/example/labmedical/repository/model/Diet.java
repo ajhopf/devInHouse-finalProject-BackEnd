@@ -33,7 +33,7 @@ public class Diet {
     private DietType dietType;
     private String description;
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean status;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Pacient pacient;

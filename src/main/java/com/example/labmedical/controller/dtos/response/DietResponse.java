@@ -20,6 +20,6 @@ public class DietResponse {
     private LocalTime time;
     private DietType dietType;
     private String description;
-    private Boolean isActive;
+    private Boolean status;
     private Long pacientId;
 }

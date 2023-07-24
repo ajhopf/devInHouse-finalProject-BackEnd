@@ -2,6 +2,7 @@ package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.AppointmentRegisterRequest;
 import com.example.labmedical.controller.dtos.response.AppointmentResponse;
+import com.example.labmedical.controller.dtos.response.MedicineResponse;
 import com.example.labmedical.controller.mapper.AppointmentMapper;
 import com.example.labmedical.repository.AppointmentRepository;
 import com.example.labmedical.repository.model.Appointment;
@@ -30,6 +31,8 @@ class AppointmentServiceTest {
     private AppointmentMapper appointmentMapper;
     @Mock
     private PacientService pacientService;
+    @Mock
+    private MedicineService medicineService;
     @Mock
     private LogService logService;
     @InjectMocks
@@ -111,15 +114,32 @@ class AppointmentServiceTest {
         }
 
         @Test
-        @DisplayName("When registering appointment and pacientId is found, it should save appointment")
+        @DisplayName("When registering appointment and medicineId is not found, it should throw EntityNotFoundException")
         void test2() {
+            AppointmentRegisterRequest request = AppointmentRegisterRequest.builder().pacientId(1L).medicineId(1L).build();
+            Pacient pacient = Pacient.builder().id(1L).build();
+
+            Mockito.when(pacientService.getPacientById(Mockito.anyLong()))
+                    .thenReturn(pacient);
+            Mockito.when(medicineService.getMedicineById(Mockito.anyLong()))
+                    .thenThrow(EntityNotFoundException.class);
+
+            assertThrows(EntityNotFoundException.class, () -> appointmentService.registerAppointment(request));
+        }
+
+        @Test
+        @DisplayName("When registering appointment and both pacientId and medicineId are found, it should save appointment")
+        void test3() {
             AppointmentRegisterRequest request = AppointmentRegisterRequest.builder().pacientId(1L).build();
             Pacient pacient = Pacient.builder().id(1L).build();
+            MedicineResponse medicine = MedicineResponse.builder().id(1L).build();
             Appointment appointment = Appointment.builder().id(1L).pacient(pacient).build();
             AppointmentResponse appointmentResponse = AppointmentResponse.builder().build();
 
             Mockito.when(pacientService.getPacientById(Mockito.anyLong()))
                     .thenReturn(pacient);
+            Mockito.when(medicineService.getMedicineById(Mockito.anyLong()))
+                    .thenReturn(medicine);
             Mockito.when(appointmentMapper.map(Mockito.any(AppointmentRegisterRequest.class)))
                     .thenReturn(appointment);
             Mockito.when(appointmentMapper.map(Mockito.any(Appointment.class)))

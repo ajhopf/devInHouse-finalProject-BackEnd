@@ -25,7 +25,7 @@ public class Medicine {
     @Column(nullable = false)
     private String medicineName;
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate medicineDate;
     @Column(nullable = false)
     private LocalTime time;
     @Column(nullable = false)

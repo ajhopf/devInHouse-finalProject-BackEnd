@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
@@ -63,5 +65,27 @@ class DietServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Tests of deleteDiet method")
+    class deleteDietTests{
+        @Test
+        @DisplayName("When no diet is found with given id, it should throw entity not found exception")
+        void test1() {
+            assertThrows(EntityNotFoundException.class, () -> {
+                dietService.deleteDiet(1L);
+            });
+        }
+
+        @Test
+        @DisplayName("When diet is found with given id, it should delete it")
+        void test2() {
+            Mockito.when(dietRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Diet.builder().build()));
+            dietService.deleteDiet(1L);
+
+            Mockito.verify(dietRepository, times(1))
+                    .deleteById(1L);
+        }
+    }
 
 }

@@ -29,7 +29,7 @@ public class ExerciseMapperComponent {
 
     LocalTime localTimeStringToLocalTimeObject(String localTimeString) {
         if (localTimeString != null) {
-            return LocalTime.parse(localTimeString, DateTimeFormatter.ofPattern("HH:mm:ss"));
+            return LocalTime.parse(localTimeString, DateTimeFormatter.ofPattern("[H:]mm[:ss]"));
         }
         return null;
     }

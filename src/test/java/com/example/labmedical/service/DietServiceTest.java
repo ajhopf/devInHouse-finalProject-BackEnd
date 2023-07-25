@@ -1,6 +1,7 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.DietRegisterRequest;
+import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.controller.mapper.DietMapper;
 import com.example.labmedical.repository.DietRepository;
 import com.example.labmedical.repository.model.Diet;
@@ -14,8 +15,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
@@ -71,9 +75,7 @@ class DietServiceTest {
         @Test
         @DisplayName("When no diet is found with given id, it should throw entity not found exception")
         void test1() {
-            assertThrows(EntityNotFoundException.class, () -> {
-                dietService.deleteDiet(1L);
-            });
+            assertThrows(EntityNotFoundException.class, () -> dietService.deleteDiet(1L));
         }
 
         @Test
@@ -85,6 +87,80 @@ class DietServiceTest {
 
             Mockito.verify(dietRepository, times(1))
                     .deleteById(1L);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of getDiets method")
+    class getDietsTests {
+        @Test
+        @DisplayName("When no diet is found with given pacient name, it should return empty list")
+        void test1() {
+            String pacientName = "Andre Hopf";
+            List<Diet> emptyDietList = new ArrayList<>();
+            List<DietResponse> emptyDietResponseList = new ArrayList<>();
+
+            Mockito.when(dietRepository.findAllByPacient_NameContaining(Mockito.anyString()))
+                    .thenReturn(emptyDietList);
+            Mockito.when(dietMapper.map(emptyDietList))
+                    .thenReturn(emptyDietResponseList);
+
+            List<DietResponse> result = dietService.getDiets(pacientName);
+
+            Mockito.verify(dietRepository, times(0))
+                    .findAll();
+            assertEquals(0, result.size());
+        }
+
+        @Test
+        @DisplayName("When pacientName is given, it should return list with diets with that given pacientName")
+        void test2() {
+            String pacientName = "Andre Hopf";
+            List<Diet> dietList = List.of(
+                    Diet.builder().build(),
+                    Diet.builder().build()
+            );
+
+            List<DietResponse> dietResponseList = List.of(
+                    DietResponse.builder().build(),
+                    DietResponse.builder().build()
+            );
+
+            Mockito.when(dietRepository.findAllByPacient_NameContaining(Mockito.anyString()))
+                    .thenReturn(dietList);
+            Mockito.when(dietMapper.map(dietList))
+                    .thenReturn(dietResponseList);
+
+            List<DietResponse> result = dietService.getDiets(pacientName);
+
+            Mockito.verify(dietRepository, times(0))
+                    .findAll();
+            assertEquals(2, result.size());
+        }
+
+        @Test
+        @DisplayName("When no pacientName is given, it should return list with all diets")
+        void test3() {
+            List<Diet> dietList = List.of(
+                    Diet.builder().build(),
+                    Diet.builder().build()
+            );
+
+            List<DietResponse> dietResponseList = List.of(
+                    DietResponse.builder().build(),
+                    DietResponse.builder().build()
+            );
+
+            Mockito.when(dietRepository.findAll())
+                    .thenReturn(dietList);
+            Mockito.when(dietMapper.map(dietList))
+                    .thenReturn(dietResponseList);
+
+            List<DietResponse> result = dietService.getDiets(null);
+
+            Mockito.verify(dietRepository, times(0))
+                    .findAllByPacient_NameContaining(Mockito.anyString());
+            assertEquals(2, result.size());
         }
     }
 

@@ -15,7 +15,7 @@ public class ExerciseResponse {
     private LocalTime timeCreated;
     @Enumerated(EnumType.STRING)
     private ExerciseType exerciseType;
-    private Integer timesPerWeek;
+    private Double timesPerWeek;
     private String exerciseSeriesName;
     private Long patientId;
     private boolean status = true;

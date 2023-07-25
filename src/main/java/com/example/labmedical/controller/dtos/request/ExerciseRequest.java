@@ -27,7 +27,8 @@ public class ExerciseRequest {
     private ExerciseType exerciseType;
 
     @NotNull(message = "O campo 'Quantidade por Semana' é obrigatório.")
-    private Integer timesPerWeek;
+    @DecimalMax(value = "99.99", inclusive = false, message = "O campo 'Quantidade por Semana' deve ter no máximo duas casas decimais.")
+    private Double timesPerWeek;
 
     @NotBlank(message = "O campo 'Descrição' é obrigatório.")
     @Size(min = 10, max = 1000, message = "A descrição deve ter entre 10 e 1000 caracteres.")

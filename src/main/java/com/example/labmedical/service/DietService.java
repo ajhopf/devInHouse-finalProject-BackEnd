@@ -1,6 +1,7 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.DietRegisterRequest;
+import com.example.labmedical.controller.dtos.request.DietUpdateRequest;
 import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.controller.mapper.DietMapper;
 import com.example.labmedical.repository.DietRepository;
@@ -53,5 +54,21 @@ public class DietService {
 
         logService.success("Busca de lista de dietas realizada.");
         return dietMapper.map(dietList);
+    }
+
+    public DietResponse updateDiet(Long dietId, DietUpdateRequest request) {
+        Diet oldDiet = dietRepository.findById(dietId)
+                .orElseThrow(() -> new EntityNotFoundException("Dieta com id " + dietId + " não encontrada."));
+
+        Diet newDiet = dietMapper.map(request);
+        newDiet.setPacient(oldDiet.getPacient());
+        newDiet.setStatus(oldDiet.getStatus());
+        newDiet.setId(dietId);
+
+        dietRepository.save(newDiet);
+
+        logService.success("Dieta atualizada. Id: " + dietId);
+
+        return dietMapper.map(newDiet);
     }
 }

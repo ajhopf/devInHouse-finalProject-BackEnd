@@ -1,6 +1,7 @@
 package com.example.labmedical.controller.mapper;
 
 import com.example.labmedical.controller.dtos.request.DietRegisterRequest;
+import com.example.labmedical.controller.dtos.request.DietUpdateRequest;
 import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.repository.model.Diet;
 import org.mapstruct.Mapper;
@@ -18,4 +19,6 @@ public interface DietMapper {
 
     @Mapping(target = "pacientId", source = "pacient.id")
     List<DietResponse> map(List<Diet> source);
+
+    Diet map(DietUpdateRequest source);
 }

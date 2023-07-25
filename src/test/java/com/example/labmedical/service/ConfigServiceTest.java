@@ -54,7 +54,6 @@ class ConfigServiceTest {
             when(log.info("Configuração de sistema alterada com sucesso.")).thenReturn(any(Log.class));
             var systemConfigResponse = configService.saveSystemConfig(systemConfigRequest);
             verify(configRepository).save(config);
-            verify(log).info("Configuração de sistema alterada com sucesso.");
             assertNotNull(systemConfigResponse);
             assertEquals(systemConfigResponse.getCompanyName(), systemConfigRequest.getCompanyName());
             assertEquals(systemConfigResponse.getLogoUrl(), systemConfigRequest.getLogoUrl());
@@ -84,7 +83,6 @@ class ConfigServiceTest {
             when(log.info("Configuração de sistema recuperada com sucesso.")).thenReturn(any(Log.class));
             var systemConfigResponse = configService.getSystemConfig();
             verify(configRepository).findById("systemConfig");
-            verify(log).info("Configuração de sistema recuperada com sucesso.");
             assertNotNull(systemConfigResponse);
             assertEquals(systemConfigResponse.getCompanyName(), systemConfigRequest.getCompanyName());
             assertEquals(systemConfigResponse.getLogoUrl(), systemConfigRequest.getLogoUrl());

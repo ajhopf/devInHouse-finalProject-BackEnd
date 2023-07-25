@@ -4,12 +4,14 @@ import com.example.labmedical.enums.ExerciseType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
+@Builder
 public class ExerciseRequest {
     @NotBlank(message = "O campo 'Nome do Série de Exercícios' é obrigatório.")
     @Size(min = 5, max = 100, message = "O nome da série deve ter entre 5 e 100 caracteres.")

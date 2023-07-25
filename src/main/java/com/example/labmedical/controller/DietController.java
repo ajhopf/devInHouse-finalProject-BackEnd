@@ -1,6 +1,7 @@
 package com.example.labmedical.controller;
 
 import com.example.labmedical.controller.dtos.request.DietRegisterRequest;
+import com.example.labmedical.controller.dtos.request.DietUpdateRequest;
 import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.service.DietService;
 import jakarta.validation.Valid;
@@ -46,5 +47,15 @@ public class DietController {
         dietService.deleteDiet(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DietResponse> updateDiet(
+            @PathVariable Long id,
+            @RequestBody @Valid DietUpdateRequest request
+            ) {
+        DietResponse diet = dietService.updateDiet(id, request);
+
+        return ResponseEntity.ok(diet);
     }
 }

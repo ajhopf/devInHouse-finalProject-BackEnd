@@ -17,10 +17,10 @@ public class ExerciseMapperComponent {
     Pacient pacientIdToPacient(Long id) {
         if(id!=null){
             Pacient pacient =  pacientRepository.findById(id).orElseThrow(() -> {
-                return new PatientNotFountException("Cliente nao encontrado");
+                return new PatientNotFountException("Patiente nao encontrado");
             });
             if(Boolean.FALSE.equals(pacient.getIsActive())) {
-                throw new PatientNotFountException("Cliente inativo");
+                throw new PatientNotFountException("Patiente inativo");
             }
             return pacient;
         }

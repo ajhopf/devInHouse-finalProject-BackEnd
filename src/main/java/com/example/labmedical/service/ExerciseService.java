@@ -9,6 +9,8 @@ import com.example.labmedical.repository.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ExerciseService {
     @Autowired
@@ -24,5 +26,23 @@ public class ExerciseService {
         exerciseRepository.save(ex);
         logger.success("O usuario " + user.getName() + " gerou um exercicio para o paciente " + ex.getPatient().getName());
         return exerciseMapper.map(ex);
+    }
+
+    public List<ExerciseResponse> getExercisesByPatientName(String patientName) {
+        List<Exercise> listaExercicios = exerciseRepository.findByPatientNameContainingIgnoreCase(patientName);
+        logger.success("Foram buscadas os exercicios do paciente " + patientName);
+        return listaExercicios.parallelStream().map(exercise -> exerciseMapper.map(exercise)).toList();
+    }
+
+    public List<ExerciseResponse> getAll() {
+        List<Exercise> listaExercicios = exerciseRepository.findAll();
+        logger.success("Foram buscadas todos os exercicios");
+        return listaExercicios.parallelStream().map(exercise -> exerciseMapper.map(exercise)).toList();
+    }
+
+    public List<ExerciseResponse> getExercisesByPatientId(Long patientId) {
+        List<Exercise> listaExercicios = exerciseRepository.findByPatientId(patientId);
+        logger.success("Foram buscadas os exercicios do paciente " + patientId);
+        return listaExercicios.parallelStream().map(exercise -> exerciseMapper.map(exercise)).toList();
     }
 }

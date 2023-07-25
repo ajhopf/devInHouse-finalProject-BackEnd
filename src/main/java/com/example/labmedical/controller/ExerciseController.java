@@ -10,27 +10,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/exercicios")
 public class ExerciseController {
     @Autowired
     private ExerciseService exerciseService;
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
     public ResponseEntity<ExerciseResponse> createExercise(
             @Valid @RequestBody ExerciseRequest exercise
-    ){
+    ) {
         SecurityContext contexto = SecurityContextHolder.getContext();
         User user = (User) contexto.getAuthentication().getPrincipal();
         var exerciseId = exerciseService.registerExercise(exercise, user).getId();
         String locationUri = "/exercises/" + exerciseId;
         return ResponseEntity.created(URI.create(locationUri)).build();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
+    public ResponseEntity<List<ExerciseResponse>> getAllExercises() {
+        return ResponseEntity.ok().body(exerciseService.getAll());
+    }
+
+    @GetMapping("/{patientName}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
+    public ResponseEntity<List<ExerciseResponse>> getExercisesByPatientName(
+            @PathVariable String patientName
+    ) {
+        return ResponseEntity.ok().body(exerciseService.getExercisesByPatientName(patientName));
+    }
+
+    @GetMapping("patientId/{patientId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
+    public ResponseEntity<List<ExerciseResponse>> getExercisesByPatientId(
+            @PathVariable Long patientId
+    ) {
+        return ResponseEntity.ok().body(exerciseService.getExercisesByPatientId(patientId));
     }
 }

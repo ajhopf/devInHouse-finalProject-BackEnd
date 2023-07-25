@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 @SpringBootTest
@@ -95,8 +94,33 @@ class DietServiceTest {
     @DisplayName("Tests of getDiets method")
     class getDietsTests {
         @Test
-        @DisplayName("When no diet is found with given pacient name, it should return empty list")
+        @DisplayName("When called with pacientId as param, it should return the pacientsDiets")
         void test1() {
+            List<Diet> pacientDietList = List.of(
+                    Diet.builder().build(),
+                    Diet.builder().build()
+            );
+            List<DietResponse> responseList = List.of(
+                    DietResponse.builder().build(),
+                    DietResponse.builder().build()
+            );
+            Mockito.when(dietRepository.findAllByPacient_Id(Mockito.anyLong()))
+                    .thenReturn(pacientDietList);
+            Mockito.when(dietMapper.map(pacientDietList))
+                    .thenReturn(responseList);
+
+            List<DietResponse> result = dietService.getDiets("1");
+
+            assertEquals(2, result.size());
+            Mockito.verify(dietRepository, times(0))
+                    .findAllByPacient_NameContaining(Mockito.anyString());
+            Mockito.verify(dietRepository, times(0))
+                    .findAll();
+        }
+
+        @Test
+        @DisplayName("When no diet is found with given pacient name, it should return empty list")
+        void test2() {
             String pacientName = "Andre Hopf";
             List<Diet> emptyDietList = new ArrayList<>();
             List<DietResponse> emptyDietResponseList = new ArrayList<>();
@@ -115,7 +139,7 @@ class DietServiceTest {
 
         @Test
         @DisplayName("When pacientName is given, it should return list with diets with that given pacientName")
-        void test2() {
+        void test3() {
             String pacientName = "Andre Hopf";
             List<Diet> dietList = List.of(
                     Diet.builder().build(),
@@ -141,7 +165,7 @@ class DietServiceTest {
 
         @Test
         @DisplayName("When no pacientName is given, it should return list with all diets")
-        void test3() {
+        void test4() {
             List<Diet> dietList = List.of(
                     Diet.builder().build(),
                     Diet.builder().build()
@@ -193,7 +217,28 @@ class DietServiceTest {
 
             assertEquals(newDiet.getDietName(), result.getDietName());
         }
+    }
 
+    @Nested
+    @DisplayName("Tests for isPositiveNumber method")
+    class isNumberTests {
+        @Test
+        @DisplayName("When it has a number as param, it should return true")
+        void test1() {
+            assertTrue(dietService.isPositiveNumber("22"));
+        }
+
+        @Test
+        @DisplayName("When it has a string as param, it should return false")
+        void test2() {
+            assertFalse(dietService.isPositiveNumber("String"));
+        }
+
+        @Test
+        @DisplayName("When it has a negative number as param, it should return false")
+        void test3() {
+            assertFalse(dietService.isPositiveNumber("-10"));
+        }
     }
 
 }

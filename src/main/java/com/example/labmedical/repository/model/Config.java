@@ -1,9 +1,7 @@
 package com.example.labmedical.repository.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+@Table(name = "config")
+@Schema
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,6 +19,6 @@ import java.util.Map;
 public class Config {
     @Id
     private String key;
-    @Column(columnDefinition = "CLOB")
+    @Column(length = 4000)
     private String value;
 }

@@ -45,4 +45,9 @@ public class ExerciseService {
         logger.success("Foram buscadas os exercicios do paciente " + patientId);
         return listaExercicios.parallelStream().map(exercise -> exerciseMapper.map(exercise)).toList();
     }
+
+    public void deleteExercise(Long exerciseId) {
+        logger.success("Foi deletado o exercicio " + exerciseId);
+        exerciseRepository.deleteById(exerciseId);
+    }
 }

@@ -18,7 +18,7 @@ public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 8, max = 64)
+    @Size(min = 8, max = 120)
     private String description;
     private Date createdDate;
     @Enumerated(EnumType.STRING)

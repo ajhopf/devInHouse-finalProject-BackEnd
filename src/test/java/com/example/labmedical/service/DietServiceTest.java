@@ -1,6 +1,7 @@
 package com.example.labmedical.service;
 
 import com.example.labmedical.controller.dtos.request.DietRegisterRequest;
+import com.example.labmedical.controller.dtos.request.DietUpdateRequest;
 import com.example.labmedical.controller.dtos.response.DietResponse;
 import com.example.labmedical.controller.mapper.DietMapper;
 import com.example.labmedical.repository.DietRepository;
@@ -162,6 +163,37 @@ class DietServiceTest {
                     .findAllByPacient_NameContaining(Mockito.anyString());
             assertEquals(2, result.size());
         }
+    }
+
+    @Nested
+    @DisplayName("Tests of updateDiet method")
+    class updateDietTests {
+        @Test
+        @DisplayName("When diet is not found with given id, it should throw EntityNotFoundException")
+        void test1() {
+            assertThrows(EntityNotFoundException.class, () -> dietService.updateDiet(1L, DietUpdateRequest.builder().build()));
+        }
+
+        @Test
+        @DisplayName("When diet is found with given id, it should update and save it")
+        void test2() {
+            Diet oldDiet = Diet.builder().dietName("old diet").build();
+            DietUpdateRequest updateRequest = DietUpdateRequest.builder().dietName("new diet").build();
+            Diet newDiet = Diet.builder().dietName("new diet").build();
+            DietResponse newDietResponse = DietResponse.builder().dietName("new diet").build();
+
+            Mockito.when(dietRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(oldDiet));
+            Mockito.when(dietMapper.map(updateRequest))
+                    .thenReturn(newDiet);
+            Mockito.when(dietRepository.save(newDiet)).thenReturn(newDiet);
+            Mockito.when(dietMapper.map(newDiet)).thenReturn(newDietResponse);
+
+            DietResponse result = dietService.updateDiet(1L, updateRequest);
+
+            assertEquals(newDiet.getDietName(), result.getDietName());
+        }
+
     }
 
 }

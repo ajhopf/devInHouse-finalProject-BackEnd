@@ -11,12 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/dietas")
 public class DietController {
     @Autowired
     private DietService dietService;
+    @GetMapping
+    public ResponseEntity<List<DietResponse>> getDiets(
+            @RequestParam(required = false) String pacientName
+    ) {
+        List<DietResponse> dietList = dietService.getDiets(pacientName);
+
+        return ResponseEntity.ok(dietList);
+    }
 
     @PostMapping
     public ResponseEntity<DietResponse> registerDiet(

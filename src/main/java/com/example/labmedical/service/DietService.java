@@ -43,11 +43,14 @@ public class DietService {
         logService.success("Dieta deletada. Id: " + id);
     }
 
-    public List<DietResponse> getDiets(String pacientName) {
+    public List<DietResponse> getDiets(String requestParam) {
         List<Diet> dietList;
 
-        if (pacientName != null && pacientName.length() > 0) {
-            dietList = dietRepository.findAllByPacient_NameContaining(pacientName);
+        if (requestParam != null && isPositiveNumber(requestParam)) {
+            Long pacientId = Long.parseLong(requestParam);
+            dietList = dietRepository.findAllByPacient_Id(pacientId);
+        } else if (requestParam != null && requestParam.length() > 0) {
+            dietList = dietRepository.findAllByPacient_NameContaining(requestParam);
         } else {
             dietList = dietRepository.findAll();
         }
@@ -70,5 +73,9 @@ public class DietService {
         logService.success("Dieta atualizada. Id: " + dietId);
 
         return dietMapper.map(newDiet);
+    }
+
+    public boolean isPositiveNumber(String param) {
+        return param.matches("\\d+");
     }
 }

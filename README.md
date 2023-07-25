@@ -203,7 +203,32 @@ Exemplo de requisição:
   Roles: Admin
  
 ```
+```
+Descrição: Este endpoint serve para criar um exercicio para o paciente.
 
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios
+  Método HTTP: POST
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Corpo:
+    {
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": "3:17:51",
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 1.99,
+      "exerciseSeriesName": "stringstri",
+      "patientId": 1,
+      "status": true
+    }
+  
+Exemplo resposta:
+  Url que possa buscar o exercicio
+ 
+```
 
 
 

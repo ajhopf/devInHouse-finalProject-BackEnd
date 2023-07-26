@@ -6,6 +6,8 @@ import com.example.labmedical.controller.mapper.ExerciseMapper;
 import com.example.labmedical.repository.ExerciseRepository;
 import com.example.labmedical.repository.model.Exercise;
 import com.example.labmedical.repository.model.User;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +46,21 @@ public class ExerciseService {
         List<Exercise> listaExercicios = exerciseRepository.findByPatientId(patientId);
         logger.success("Foram buscadas os exercicios do paciente " + patientId);
         return listaExercicios.parallelStream().map(exercise -> exerciseMapper.map(exercise)).toList();
+    }
+
+    public void deleteExercise(Long exerciseId) {
+        if(!exerciseRepository.existsById(exerciseId))
+            throw new EntityNotFoundException("Esse id nao existe");
+        exerciseRepository.deleteById(exerciseId);
+        logger.success("Foi deletado o exercicio " + exerciseId);
+    }
+
+    public void updateExercise(Long exerciseId, ExerciseRequest exercise) {
+        if(!exerciseRepository.existsById(exerciseId))
+            throw new EntityNotFoundException("Esse id nao existe");
+        Exercise ex = exerciseMapper.map(exercise);
+        ex.setId(exerciseId);
+        exerciseRepository.save(ex);
+        logger.success("O exercicio " + exerciseId + " foi atualizado");
     }
 }

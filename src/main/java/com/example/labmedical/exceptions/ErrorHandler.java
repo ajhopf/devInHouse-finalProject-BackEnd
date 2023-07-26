@@ -96,4 +96,12 @@ public class ErrorHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("Erro", e.getMessage()));
     }
+
+    @ExceptionHandler(PatientWithRecordsException.class)
+    public ResponseEntity<Map<String, String>> patientWithRecords() {
+        logger.error("Tentativa de deleção de paciente com registros.");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("Erro", "Não é possível deletar o paciente pois este possui registros vinculados."));
+    }
 }

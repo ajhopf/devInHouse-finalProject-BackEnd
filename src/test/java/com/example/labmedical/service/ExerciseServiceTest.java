@@ -21,8 +21,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ExerciseServiceTest {
@@ -112,6 +111,21 @@ class ExerciseServiceTest {
             exerciseService.getExercisesByPatientId(1L);
             verify(exerciseRepository).findByPatientId(1L);
             verify(exerciseMapper).map(mockExercise);
+            verify(log).success(anyString());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Tests of deleteExercise Method")
+    class deleteExerciseTests {
+
+        @Test
+        @DisplayName("When receives exerciseId, it should delete the exercise")
+        void test1() {
+            doNothing().when(exerciseRepository).deleteById(1L);
+            exerciseService.deleteExercise(1L);
+            verify(exerciseRepository).deleteById(1L);
             verify(log).success(anyString());
         }
 

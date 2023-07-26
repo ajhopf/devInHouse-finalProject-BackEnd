@@ -70,5 +70,7 @@ public class AddressService {
         }
 
         addressRepository.delete(address);
+
+        logService.success("O endereço com id " + address.getId() + " foi deletado");
     }
 }

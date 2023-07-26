@@ -377,17 +377,6 @@ Exemplo de requisição:
   Auteticado: Sim
   Roles: Admin, DOCTOR, NURSE
   Parametros: id do paciente
-  Corpo:
-    {
-      "description": "string",
-      "dateCreated": "2023-07-25",
-      "timeCreated": "3:17:51",
-      "exerciseType": "AEROBIC_ENDURANCE",
-      "timesPerWeek": 1.99,
-      "exerciseSeriesName": "stringstri",
-      "patientId": 1,
-      "status": true
-    }
   
 Exemplo resposta:
   {
@@ -401,4 +390,41 @@ Exemplo resposta:
       "string"
     ]
   } 
+```
+```
+Descrição: Este endpoint serve para buscar todos os prontuarios.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/prontuario
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  
+Exemplo resposta:
+  [
+    {
+      "name": "stringst",
+      "healthInsurance": "string",
+      "healthInsuranceNumber": "string",
+      "alergies": [
+        "string"
+      ],
+      "specialCare": [
+        "string"
+      ]
+    },
+    {
+      "name": "stringst",
+      "healthInsurance": "string",
+      "healthInsuranceNumber": "string",
+      "alergies": [
+        "string"
+      ],
+      "specialCare": [
+        "string"
+      ]
+    }
+  ] 
 ```

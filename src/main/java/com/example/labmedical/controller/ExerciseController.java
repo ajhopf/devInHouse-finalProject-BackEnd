@@ -56,8 +56,19 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{exerciseId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
     public ResponseEntity<Void> deleteExercise(@PathVariable Long exerciseId) {
         exerciseService.deleteExercise(exerciseId);
         return ResponseEntity.accepted().build();
+    }
+
+    @PutMapping("/{exerciseId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
+    public ResponseEntity<Void> updateExercise(
+            @PathVariable Long exerciseId,
+            @Valid @RequestBody ExerciseRequest exercise
+    ) {
+        exerciseService.updateExercise(exerciseId, exercise);
+        return ResponseEntity.ok().build();
     }
 }

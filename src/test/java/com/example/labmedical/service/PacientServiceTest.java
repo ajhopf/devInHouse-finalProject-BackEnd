@@ -6,7 +6,8 @@ import com.example.labmedical.controller.dtos.request.PacientUpdateRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.controller.mapper.PacientMapper;
 import com.example.labmedical.exceptions.PacientAlreadyRegisteredException;
-import com.example.labmedical.repository.PacientRepository;
+import com.example.labmedical.exceptions.PatientWithRecordsException;
+import com.example.labmedical.repository.*;
 import com.example.labmedical.repository.model.Address;
 import com.example.labmedical.repository.model.Log;
 import com.example.labmedical.repository.model.Pacient;
@@ -41,6 +42,16 @@ class PacientServiceTest {
     private AlergyService alergyService;
     @Mock
     private SpecialCareService specialCareService;
+    @Mock
+    private AppointmentRepository appointmentRepository;
+    @Mock
+    private ExamRepository examRepository;
+    @Mock
+    private MedicineRepository medicineRepository;
+    @Mock
+    private DietRepository dietRepository;
+    @Mock
+    private ExerciseRepository exerciseRepository;
     @InjectMocks
     private PacientService pacientService;
 
@@ -435,6 +446,137 @@ class PacientServiceTest {
                     .deleteAllPacientSpecialCares(Mockito.anyLong());
             Mockito.verify(specialCareService, times(3))
                     .registerSpecialCare(Mockito.any(Pacient.class), Mockito.anyString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of hasRecords method")
+    class hasRecordsTests {
+        @Test
+        @DisplayName("When patient has appointment registered, it should return true")
+        void test1() {
+            Mockito.when(appointmentRepository.existsByPacient_Id(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            assertTrue(pacientService.hasRecords(1L));
+        }
+
+        @Test
+        @DisplayName("When patient has exam registered, it should return true")
+        void test2() {
+            Mockito.when(examRepository.existsByPacient_Id(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            assertTrue(pacientService.hasRecords(1L));
+        }
+        @Test
+        @DisplayName("When patient has medicine registered, it should return true")
+        void test3() {
+            Mockito.when(medicineRepository.existsByPacient_Id(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            assertTrue(pacientService.hasRecords(1L));
+        }
+        @Test
+        @DisplayName("When patient has diet registered, it should return true")
+        void test4() {
+            Mockito.when(dietRepository.existsByPacient_Id(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            assertTrue(pacientService.hasRecords(1L));
+        }
+
+        @Test
+        @DisplayName("When patient has exercise registered, it should return true")
+        void test5() {
+            Mockito.when(exerciseRepository.existsByPatient_Id(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            assertTrue(pacientService.hasRecords(1L));
+        }
+
+        @Test
+        @DisplayName("When patient has no records registeres, it should return false")
+        void test6() {
+            assertFalse(pacientService.hasRecords(1L));
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests of deletePacient method")
+    class deletePacientTests{
+        @Test
+        @DisplayName("When no patient is found with given id, it should throw EntityNotFoundException")
+        void test1() {
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenThrow(EntityNotFoundException.class);
+
+            assertThrows(EntityNotFoundException.class, () -> pacientService.deletePacient(1L));
+        }
+
+        @Test
+        @DisplayName("When patient has records, it should throw PatientWithRecordsException")
+        void test2() {
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Pacient.builder().build()));
+            Mockito.when(appointmentRepository.existsByPacient_Id(Mockito.anyLong())).thenReturn(true);
+
+            assertThrows(PatientWithRecordsException.class, () -> pacientService.deletePacient(1L));
+        }
+
+        @Test
+        @DisplayName("When patient doesn't have records, it should delete its alergies and special cares")
+        void test3() {
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(Pacient.builder().id(1L).build()));
+            Mockito.doNothing().when(alergyService).deleteAllPacientAlergies(Mockito.anyLong());
+            Mockito.doNothing().when(specialCareService).deleteAllPacientSpecialCares(Mockito.anyLong());
+            Mockito.doNothing().when(pacientRepository).delete(Mockito.any(Pacient.class));
+            Mockito.doNothing().when(addressService).deleteAddress(Mockito.any(Address.class));
+
+            pacientService.deletePacient(1L);
+
+            Mockito.verify(specialCareService, times(1))
+                    .deleteAllPacientSpecialCares(Mockito.anyLong());
+            Mockito.verify(alergyService, times(1))
+                    .deleteAllPacientAlergies(Mockito.anyLong());
+        }
+
+        @Test
+        @DisplayName("When patient doesn't have records, it should delete the patient")
+        void test4() {
+            Pacient pacient = Pacient.builder().id(1L).build();
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(pacient));
+            Mockito.doNothing().when(alergyService).deleteAllPacientAlergies(Mockito.anyLong());
+            Mockito.doNothing().when(specialCareService).deleteAllPacientSpecialCares(Mockito.anyLong());
+            Mockito.doNothing().when(pacientRepository).delete(Mockito.any(Pacient.class));
+            Mockito.doNothing().when(addressService).deleteAddress(Mockito.any(Address.class));
+
+            pacientService.deletePacient(1L);
+
+            Mockito.verify(pacientRepository, times(1))
+                    .delete(pacient);
+        }
+
+        @Test
+        @DisplayName("When patient doesn't have records, it should delete the patient's address")
+        void test5() {
+            Address address = Address.builder().build();
+            Pacient pacient = Pacient.builder().id(1L).address(address).build();
+
+            Mockito.when(pacientRepository.findById(Mockito.anyLong()))
+                    .thenReturn(Optional.of(pacient));
+            Mockito.doNothing().when(alergyService).deleteAllPacientAlergies(Mockito.anyLong());
+            Mockito.doNothing().when(specialCareService).deleteAllPacientSpecialCares(Mockito.anyLong());
+            Mockito.doNothing().when(pacientRepository).delete(Mockito.any(Pacient.class));
+            Mockito.doNothing().when(addressService).deleteAddress(Mockito.any(Address.class));
+
+            pacientService.deletePacient(1L);
+
+            Mockito.verify(addressService, times(1))
+                    .deleteAddress(address);
         }
     }
 

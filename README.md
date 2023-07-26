@@ -339,4 +339,30 @@ Exemplo de requisição:
 Exemplo resposta:
   status: 202
 ```
+```
+Descrição: Este endpoint serve para atualizar um exercicio para o paciente.
 
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios/{id do exercicio}
+  Método HTTP: PUT
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Parametros: id do exercicio
+  Corpo:
+    {
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": "3:17:51",
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 1.99,
+      "exerciseSeriesName": "stringstri",
+      "patientId": 1,
+      "status": true
+    }
+  
+Exemplo resposta:
+  status: 200
+ 
+```

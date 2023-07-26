@@ -123,9 +123,32 @@ class ExerciseServiceTest {
         @Test
         @DisplayName("When receives exerciseId, it should delete the exercise")
         void test1() {
+            when(exerciseRepository.existsById(1L)).thenReturn(true);
             doNothing().when(exerciseRepository).deleteById(1L);
             exerciseService.deleteExercise(1L);
             verify(exerciseRepository).deleteById(1L);
+            verify(log).success(anyString());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Tests of updateExercise Method")
+    class updateExerciseTests {
+
+        @Test
+        @DisplayName("when receives exerciseId, it should update the exercise")
+        void test1() {
+            ExerciseRequest exerciseRequest = ExerciseRequest.builder().build();
+            User user = User.builder().name("teste").build();
+            Pacient patient = Pacient.builder().name("teste").build();
+            Exercise mockExercise = Exercise.builder().patient(patient).build();
+            when(exerciseRepository.existsById(1L)).thenReturn(true);
+            when(exerciseMapper.map(exerciseRequest)).thenReturn(mockExercise);
+            when(exerciseRepository.save(mockExercise)).thenReturn(mockExercise);
+            exerciseService.updateExercise(1L,exerciseRequest);
+            verify(exerciseRepository).existsById(1L);
+            verify(exerciseMapper).map(exerciseRequest);
             verify(log).success(anyString());
         }
 

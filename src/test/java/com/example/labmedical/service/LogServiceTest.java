@@ -43,7 +43,7 @@ class LogServiceTest {
         @DisplayName("When description has more tha 64 caracters, it should return ConstraintViolationException")
         @Transactional
         void test1() {
-            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
+            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
             assertThrows(ConstraintViolationException.class, () -> {
                 logServiceAutowired.success(description);
             });
@@ -80,7 +80,7 @@ class LogServiceTest {
         @DisplayName("When description has more tha 64 caracters, it should return ConstraintViolationException")
         @Transactional
         void test1() {
-            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
+            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
             assertThrows(ConstraintViolationException.class, () -> {
                 logServiceAutowired.info(description);
             });
@@ -117,7 +117,7 @@ class LogServiceTest {
         @DisplayName("When description has more tha 64 caracters, it should return ConstraintViolationException")
         @Transactional
         void test1() {
-            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
+            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
             assertThrows(ConstraintViolationException.class, () -> {
                 logServiceAutowired.error(description);
             });
@@ -154,7 +154,7 @@ class LogServiceTest {
         @DisplayName("When description has more tha 64 caracters, it should return ConstraintViolationException")
         @Transactional
         void test1() {
-            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
+            var description = "5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S5tg0Ee33GXqny1my8YCGE4u7oC2XIPI3Z509djL7MSw1G4WcMzbyyMxpB6D87f83S";
             var logRequest = LogRequest.builder()
                     .logType(Log.LogType.SUCCESS)
                     .description(description)

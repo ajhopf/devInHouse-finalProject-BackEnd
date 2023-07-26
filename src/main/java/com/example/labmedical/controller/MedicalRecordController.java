@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/prontuarios")
 public class MedicalRecordController {
@@ -22,8 +24,15 @@ public class MedicalRecordController {
     private PacientMapper pacientMapper;
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
-    public ResponseEntity<PatientMedicalRecordResponse> getPatient(
+    public ResponseEntity<PatientMedicalRecordResponse> getMedicalRecordPatient(
             @PathVariable Long id) {
         return ResponseEntity.ok(pacientMapper.map(patientService.getPacientResponseById(id)));
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'NURSE')")
+    public ResponseEntity<List<PatientMedicalRecordResponse>> getAllMedicalRecords() {
+        var allRecords = patientService.getPacients();
+        return ResponseEntity.ok(allRecords.parallelStream().map(pacientMapper::map).toList());
     }
 }

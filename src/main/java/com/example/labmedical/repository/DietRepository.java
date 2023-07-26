@@ -10,4 +10,5 @@ import java.util.List;
 public interface DietRepository  extends JpaRepository<Diet, Long> {
     List<Diet> findAllByPacient_Id(Long id);
     List<Diet> findAllByPacient_NameContaining(String pacientName);
+    boolean existsByPacient_Id(Long pacientId);
 }

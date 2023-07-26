@@ -366,3 +366,39 @@ Exemplo resposta:
   status: 200
  
 ```
+```
+Descrição: Este endpoint serve para buscar todos os prontuarios pelo id do paciente.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/prontuario/{id do paciente}
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Parametros: id do paciente
+  Corpo:
+    {
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": "3:17:51",
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 1.99,
+      "exerciseSeriesName": "stringstri",
+      "patientId": 1,
+      "status": true
+    }
+  
+Exemplo resposta:
+  {
+    "name": "stringst",
+    "healthInsurance": "string",
+    "healthInsuranceNumber": "string",
+    "alergies": [
+      "string"
+    ],
+    "specialCare": [
+      "string"
+    ]
+  } 
+```

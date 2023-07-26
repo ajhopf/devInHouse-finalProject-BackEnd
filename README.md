@@ -229,7 +229,114 @@ Exemplo resposta:
   Url que possa buscar o exercicio
  
 ```
+```
+Descrição: Este endpoint serve para buscar todos os exercicios.
 
+Autor: Leandro da Silva
 
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  
+Exemplo resposta:
+  [
+    {
+      "id": 0,
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": {
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nano": 0
+      },
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 0,
+      "exerciseSeriesName": "string",
+      "patientId": 0,
+      "status": true
+    }
+  ]
+```
+```
+Descrição: Este endpoint serve para buscar os exercicios pelo nome do paciente.
 
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios/{nome do paciente}
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Parametros: Nome do paciente
+  
+Exemplo resposta:
+  [
+    {
+      "id": 0,
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": {
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nano": 0
+      },
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 0,
+      "exerciseSeriesName": "string",
+      "patientId": 0,
+      "status": true
+    }
+  ]
+```
+```
+Descrição: Este endpoint serve para buscar os exercicios pelo id do paciente.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios/patientId/{id do paciente}
+  Método HTTP: GET
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Parametros: id do paciente
+  
+Exemplo resposta:
+  [
+    {
+      "id": 0,
+      "description": "string",
+      "dateCreated": "2023-07-25",
+      "timeCreated": {
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nano": 0
+      },
+      "exerciseType": "AEROBIC_ENDURANCE",
+      "timesPerWeek": 0,
+      "exerciseSeriesName": "string",
+      "patientId": 0,
+      "status": true
+    }
+  ]
+```
+```
+Descrição: Este endpoint serve deletar um exercicio pelo id.
+
+Autor: Leandro da Silva
+
+Exemplo de requisição:
+  Url: http://localhost:8080/api/exercicios/{id do exercicio}
+  Método HTTP: DELETE
+  Auteticado: Sim
+  Roles: Admin, DOCTOR, NURSE
+  Parametros: id do exercicio
+  
+Exemplo resposta:
+  status: 202
+```
 

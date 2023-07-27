@@ -6,6 +6,7 @@ import com.example.labmedical.service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +20,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<List<AppointmentResponse>> getAppointments(
             @RequestParam(required = false) Long pacientId
             ) {
@@ -28,6 +30,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/cadastrar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<AppointmentResponse> registerAppointment(
             @RequestBody @Valid AppointmentRegisterRequest request,
             UriComponentsBuilder uriBuilder
@@ -42,6 +45,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
 
@@ -49,9 +53,10 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
     public ResponseEntity<AppointmentResponse> updateAppointment(
             @PathVariable Long id,
-            @RequestBody AppointmentRegisterRequest request){
+            @RequestBody @Valid AppointmentRegisterRequest request){
         AppointmentResponse appointment = appointmentService.updateAppointment(id, request);
         return ResponseEntity.ok(appointment);
     }

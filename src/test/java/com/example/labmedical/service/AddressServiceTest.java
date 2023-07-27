@@ -143,5 +143,30 @@ class AddressServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Tests of deleteAddress method")
+    class deleteAddressTests{
+        @Test
+        @DisplayName("When address doesnt exist, it should throw EntityNotFoundException")
+        void test1() {
+            Address address = Address.builder().id(1L).build();
+
+            assertThrows(EntityNotFoundException.class, () -> addressService.deleteAddress(address));
+        }
+
+        @Test
+        @DisplayName("When address is found, it should delete it")
+        void test2() {
+            Address address = Address.builder().id(1L).build();
+            Mockito.when(addressRepository.existsById(Mockito.anyLong()))
+                    .thenReturn(true);
+
+            addressService.deleteAddress(address);
+
+            Mockito.verify(addressRepository, Mockito.times(1))
+                    .delete(address);
+        }
+    }
+
 
 }

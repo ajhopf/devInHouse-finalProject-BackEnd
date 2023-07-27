@@ -5,7 +5,8 @@ import com.example.labmedical.controller.dtos.request.PacientUpdateRequest;
 import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.controller.mapper.PacientMapper;
 import com.example.labmedical.exceptions.PacientAlreadyRegisteredException;
-import com.example.labmedical.repository.PacientRepository;
+import com.example.labmedical.exceptions.PatientWithRecordsException;
+import com.example.labmedical.repository.*;
 import com.example.labmedical.repository.model.Address;
 import com.example.labmedical.repository.model.Pacient;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,6 +30,16 @@ public class PacientService {
     private SpecialCareService specialCareService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    private ExamRepository examRepository;
+    @Autowired
+    private MedicineRepository medicineRepository;
+    @Autowired
+    private DietRepository dietRepository;
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     public List<PacientResponse> getPacients() {
         List<Pacient> pacientList = pacientRepository.findAll();
@@ -147,5 +158,29 @@ public class PacientService {
 
     public Boolean checkIfPacientExists(PacientRegisterRequest request) {
         return pacientRepository.existsByEmailOrCpf(request.getEmail(), request.getCpf());
+    }
+
+    public void deletePacient(Long id) {
+        Pacient pacient = pacientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente com id " + id + " não encontrado."));
+
+        if (hasRecords(id)) {
+            throw new PatientWithRecordsException();
+        }
+
+        alergyService.deleteAllPacientAlergies(pacient.getId());
+        specialCareService.deleteAllPacientSpecialCares(pacient.getId());
+        pacientRepository.delete(pacient);
+        addressService.deleteAddress(pacient.getAddress());
+
+        logService.success("Paciente deletado. Id: " + id);
+    }
+
+    public boolean hasRecords(Long id) {
+        return appointmentRepository.existsByPacient_Id(id) ||
+               examRepository.existsByPacient_Id(id) ||
+               medicineRepository.existsByPacient_Id(id) ||
+               dietRepository.existsByPacient_Id(id) ||
+               exerciseRepository.existsByPatient_Id(id);
     }
 }

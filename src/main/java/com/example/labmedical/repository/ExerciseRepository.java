@@ -11,5 +11,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     List<Exercise> findByPatientNameContainingIgnoreCase(String patientName);
 
     List<Exercise> findByPatientId(Long patientId);
+    boolean existsByPatient_Id(Long pacientId);
 }
 

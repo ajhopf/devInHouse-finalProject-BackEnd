@@ -61,4 +61,16 @@ public class AddressService {
 
         return addressWithNewInfo;
     }
+
+    public void deleteAddress(Address address) {
+        boolean addressExists = addressRepository.existsById(address.getId());
+
+        if (!addressExists) {
+            throw new EntityNotFoundException("Endereço não encontrado");
+        }
+
+        addressRepository.delete(address);
+
+        logService.success("O endereço com id " + address.getId() + " foi deletado");
+    }
 }

@@ -13,4 +13,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("SELECT e FROM Exam e WHERE e.pacient.name LIKE %:name%")
     List<Exam> findExamsByPacientNameLike(String name);
 
+    boolean existsByPacient_Id(Long pacientId);
 }

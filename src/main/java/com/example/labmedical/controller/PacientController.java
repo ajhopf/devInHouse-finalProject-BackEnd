@@ -6,6 +6,7 @@ import com.example.labmedical.controller.dtos.response.PacientResponse;
 import com.example.labmedical.service.PacientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -45,6 +46,13 @@ public class PacientController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(pacient);
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> deletePacient(@PathVariable Long id) {
+        pacientService.deletePacient(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PutMapping("/{id}")

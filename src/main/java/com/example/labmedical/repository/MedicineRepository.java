@@ -14,4 +14,5 @@ public interface MedicineRepository extends JpaRepository<Medicine,Long> {
     @Query("SELECT m FROM Medicine m where m.pacient.id = :pacientId")
     List<Medicine> getMedicinesByPacient_Id(@Param("pacientId") Long id);
 
+    boolean existsByPacient_Id(Long pacientId);
 }

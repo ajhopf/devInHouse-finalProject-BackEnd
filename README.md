@@ -12,6 +12,7 @@ Essa API é um sistema de gestão hospitalar. Este software tem como objetivo ot
   - [Exercícios](#exercícios)
   - [Prontuários](#prontuários)
   - [Pacientes](#paciente)
+  - [Dieta](#dieta)
     <a id="tech"></a>
 
 Este projeto faz parte dos projetos de avaliação do curso DEVInHouse.
@@ -779,4 +780,138 @@ Exemplo de resposta:
 
 Status: 202
 
+```
+
+### Dieta
+
+```
+Descrição: Este endpoint serve para cadastrar uma nova dieta.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/dietas
+Método HTTP: POST
+Autenticado: Sim
+Roles: any
+Corpo:
+{
+  "dietName": "string - minimo 5 / máximo 100 caracteres - obrigatório",
+  "dietDate": "data válida - obrigatório",
+  "time": "horário válido - formato "HH:mm:ss - obrigatório",
+  "dietType": "LOW_CARB, DASH, PALEO, KETO, DUKAN, MEDITERRANEAN, OTHER - obrigatório",
+  "description": "string - não obrigatório",
+  "status": boolean,
+  "pacientId": id do paciente
+}
+
+Exemplo de resposta:
+
+Status: 201
+Corpo:
+{
+  "id": 1,
+  "dietName": "string",
+  "dietDate": "2023-07-28",
+  "time": "11:11:11",
+  "dietType": "LOW_CARB",
+  "description": "string",
+  "status": true,
+  "pacientId": 1
+}
+```
+
+```
+Descrição: Este endpoint serve para listar todas as dietas ou dietas pelo nome do paciente.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/dietas - busca de todas dietas
+URL: http://localhost:8080/api/dietas?pacientName=andre - busca de dietas de pacientes que tenham 'andre' no nome
+Método HTTP: GET
+Autenticado: Sim
+Roles: any
+Query Param: nome do paciente - opcional
+
+Exemplo de resposta:
+
+Status: 200
+Corpo:
+[
+  {
+    "id": 1,
+    "dietName": "string",
+    "dietDate": "2023-07-28",
+    "time": "06:10:11",
+    "dietType": "PALEO",
+    "description": "string",
+    "status": true,
+    "pacientId": 1
+  },
+  {
+    "id": 2,
+    "dietName": "string",
+    "dietDate": "2023-07-28",
+    "time": "11:11:11",
+    "dietType": "LOW_CARB",
+    "description": "string",
+    "status": true,
+    "pacientId": 22
+  }
+]
+```
+
+```
+Descrição: Este endpoint serve para atualizar uma dieta pelo id.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/dietas/{id da dieta}
+Método HTTP: PUT
+Autenticado: Sim
+Roles: any
+Parametro: id da dieta
+Corpo:
+{
+  "dietName": "string",
+  "dietDate": "2023-07-28",
+  "time": "18:33:00",
+  "dietType": "LOW_CARB",
+  "description": "string"
+}
+
+Exemplo de resposta:
+
+Status: 200
+Corpo:
+{
+  "id": 1,
+  "dietName": "string",
+  "dietDate": "2023-07-28",
+  "time": "18:33:00",
+  "dietType": "LOW_CARB",
+  "description": "string",
+  "status": true,
+  "pacientId": 1
+}
+```
+
+```
+Descrição: Este endpoint serve para deletar uma dieta pelo id.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/dietas/{id da dieta}
+Método HTTP: DELETE
+Autenticado: Sim
+Roles: any
+Parametro: id da dieta
+
+Exemplo de resposta:
+
+Status: 202
+Corpo:
 ```

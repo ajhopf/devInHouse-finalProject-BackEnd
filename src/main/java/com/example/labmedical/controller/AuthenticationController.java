@@ -17,6 +17,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("cadastrar")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthenticationResponse> registerUser(
             @RequestBody UserRegisterRequest request,
             @RequestParam Role role

@@ -14,6 +14,8 @@ Essa API é um sistema de gestão hospitalar. Este software tem como objetivo ot
   - [Pacientes](#paciente)
   - [Dieta](#dieta)
   - [Consultas](#consultas)
+  - [Autenticação](#autenticação)
+  - [Usuário](#usuário)
     <a id="tech"></a>
 
 Este projeto faz parte dos projetos de avaliação do curso DEVInHouse.
@@ -1059,4 +1061,82 @@ Exemplo de resposta:
 
 Status: 202
  
+```
+
+### Autenticação
+
+```
+Descrição: Este endpoint serve para fazer o login na aplicação.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/login
+Método HTTP: DELETE
+Autenticado: Sim
+Roles: any
+Corpo: 
+{
+  "email": "string - email válido - obrigatório",
+  "password": "string - obrigatório"
+}
+
+Exemplo de resposta:
+
+Status: 200
+
+{
+  "name": "Admin",
+  "role": "ROLE_ADMIN",
+  "photoUrl": null,
+  "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTA1ODE3MjEsImV4cCI6MTY5MTE4MTcyMX0.osFtYm5rwO7YoHdKeRIrlP1DwSg6qqNi4aTx_V8aH8c"
+}
+
+```
+
+### Usuário
+
+```
+Descrição: Este endpoint serve para fazer o reset da senha do usuário.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/resetarsenha
+Método HTTP: put
+Autenticado: Não
+Corpo: 
+{
+  "id": numero - id do usuário - obrigatório,
+  "email": "string - email valido - obrigatório",
+  "password": "string - obrigatório"
+}
+
+Exemplo de resposta:
+
+Status: 200
+
+```
+
+
+```
+Descrição: Este endpoint serve para receber o id do usuário pelo email.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/{ email }
+Método HTTP: GET
+Autenticado: Não
+Parametro: email do usuário
+
+Exemplo de resposta:
+
+Status: 200
+
+{
+  "id": 1,
+  "email": "string@email.com"
+}
+
 ```

@@ -13,6 +13,7 @@ Essa API é um sistema de gestão hospitalar. Este software tem como objetivo ot
   - [Prontuários](#prontuários)
   - [Pacientes](#paciente)
   - [Dieta](#dieta)
+  - [Consultas](#consultas)
     <a id="tech"></a>
 
 Este projeto faz parte dos projetos de avaliação do curso DEVInHouse.
@@ -875,11 +876,11 @@ Roles: any
 Parametro: id da dieta
 Corpo:
 {
-  "dietName": "string",
-  "dietDate": "2023-07-28",
-  "time": "18:33:00",
-  "dietType": "LOW_CARB",
-  "description": "string"
+  "dietName": "string - minimo 5 / máximo 100 caracteres - obrigatório",
+  "dietDate": "data válida - obrigatório",
+  "time": "string - horário válido formato 'HH:mm:ss' - obrigatório",
+  "dietType": "LOW_CARB, DASH, PALEO, KETO, DUKAN, MEDITERRANEAN, OTHER - obrigatório",
+  "description": "string - não obrigatório"
 }
 
 Exemplo de resposta:
@@ -914,4 +915,148 @@ Exemplo de resposta:
 
 Status: 202
 Corpo:
+```
+
+### Consultas
+
+```
+Descrição: Este endpoint serve para cadastrar uma nova consulta.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/consultas/cadastrar
+Método HTTP: POST
+Autenticado: Sim
+Roles: ADMIN, DOCTOR
+Corpo:
+{
+  "appointmentReason": "strings - min 8 / máximo 64 caracteres - obrigatório",
+  "appointmentDate": "data válida - obrigatório",
+  "time": "string - formato 'HH:mm:ss' - obrigatório",
+  "problemDescription": "string - min 16 / máximo 1024 caracteres - obrigatório",
+  "dosageAndPrecautions": "string - min 16 / máximo 256 caracteres - obrigatório",
+  "isActive": boolean - obrigatório,
+  "pacientId": "number - obrigatório"
+  "medicineId": "number - obrigatório"
+}
+
+Exemplo de resposta:
+
+Status: 201
+Corpo:
+{
+  "id": 64,
+  "appointmentReason": "stringst",
+  "appointmentDate": "2023-07-28",
+  "time": "11:11:11",
+  "problemDescription": "stringstringstri",
+  "dosageAndPrecautions": "stringstringstri",
+  "isActive": true,
+  "pacientId": 1,
+  "medicineId": 1
+}
+```
+
+```
+Descrição: Este endpoint serve para listar todas as consultas ou consultas pelo id do paciente.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/consultas - busca de todas consultas
+URL: http://localhost:8080/api/consultas?pacientId=1' - busca de consultas do paciente com id 1
+Método HTTP: GET
+Autenticado: Sim
+Roles: ADMIN, DOCTOR
+Param: id do paciente - opcional
+
+Exemplo de resposta:
+
+Status: 200
+Corpo:
+[
+  {
+    "id": 61,
+    "appointmentReason": "dor no quadril",
+    "appointmentDate": "2023-07-28",
+    "time": "09:14:00",
+    "problemDescription": "stringststringststring",
+    "dosageAndPrecautions": "stringststringststring",
+    "isActive": true,
+    "pacientId": 1,
+    "medicineId": null
+  },
+  {
+    "id": 63,
+    "appointmentReason": "dor de joelho",
+    "appointmentDate": "2023-07-28",
+    "time": "14:28:00",
+    "problemDescription": "stringststringststring",
+    "dosageAndPrecautions": "stringststringststring",
+    "isActive": true,
+    "pacientId": 1,
+    "medicineId": 21
+  }
+]  
+```
+
+```
+Descrição: Este endpoint serve para atualizar uma consulta pelo id da consulta.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/consultas/{id da consulta}
+Método HTTP: PUT
+Autenticado: Sim
+Roles: ADMIN, DOCTOR
+Param: id da consulta - obrigatório
+Corpo:
+{
+  "appointmentReason": "strings - min 8 / máximo 64 caracteres - obrigatório",
+  "appointmentDate": "data válida - obrigatório",
+  "time": "string - formato 'HH:mm:ss' - obrigatório",
+  "problemDescription": "string - min 16 / máximo 1024 caracteres - obrigatório",
+  "dosageAndPrecautions": "string - min 16 / máximo 256 caracteres - obrigatório",
+  "isActive": boolean - obrigatório,
+  "pacientId": "number - obrigatório"
+  "medicineId": "number - obrigatório"
+}
+
+Exemplo de resposta:
+
+Status: 200
+Corpo:
+[
+  {
+  "id": 61,
+  "appointmentReason": "stringst",
+  "appointmentDate": "2023-07-28",
+  "time": "12:12:12",
+  "problemDescription": "stringstringstri",
+  "dosageAndPrecautions": "stringstringstri",
+  "isActive": true,
+  "pacientId": 1,
+  "medicineId": 1
+ }
+]  
+```
+
+```
+Descrição: Este endpoint serve para deletar uma consulta pelo id da consulta.
+
+Autor: André Hopf
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/consultas/{id da consulta}
+Método HTTP: DELETE
+Autenticado: Sim
+Roles: ADMIN, DOCTOR
+Param: id da consulta - obrigatório
+
+Exemplo de resposta:
+
+Status: 202
+ 
 ```

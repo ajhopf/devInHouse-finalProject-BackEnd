@@ -34,6 +34,8 @@ public class AppointmentRegisterRequest {
     private String dosageAndPrecautions;
     @NotNull
     private Boolean isActive;
+    @NotNull
     private Long pacientId;
+    @NotNull
     private Long medicineId;
 }

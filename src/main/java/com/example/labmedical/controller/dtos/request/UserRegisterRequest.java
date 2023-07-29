@@ -23,8 +23,7 @@ public class UserRegisterRequest {
     private String gender;
     @NotNull
     @NotBlank
-//    habilitar depois
-//    @CPF
+    @CPF
     private String cpf;
     @NotNull
     @NotBlank

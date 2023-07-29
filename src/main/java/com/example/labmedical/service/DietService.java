@@ -65,7 +65,7 @@ public class DietService {
 
         Diet newDiet = dietMapper.map(request);
         newDiet.setPacient(oldDiet.getPacient());
-        newDiet.setStatus(oldDiet.getStatus());
+        newDiet.setStatus(request.getStatus());
         newDiet.setId(dietId);
 
         dietRepository.save(newDiet);

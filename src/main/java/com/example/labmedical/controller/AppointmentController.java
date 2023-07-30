@@ -49,7 +49,7 @@ public class AppointmentController {
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.accepted().build();
     }
 
     @PutMapping("/{id}")

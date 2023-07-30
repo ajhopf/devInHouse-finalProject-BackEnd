@@ -21,8 +21,8 @@ public class Exam {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(name = "exam_date", nullable = false)
-    private LocalDate date;
+    @Column(nullable = false)
+    private LocalDate examDate;
     @Column(nullable = false)
     private LocalTime time;
     @Column(name = "exam_type",nullable = false)

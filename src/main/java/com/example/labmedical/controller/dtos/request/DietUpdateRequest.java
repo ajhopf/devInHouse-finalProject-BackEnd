@@ -31,5 +31,6 @@ public class DietUpdateRequest {
     @NotNull
     @Enumerated(EnumType.STRING)
     private DietType dietType;
+    private Boolean status;
     private String description;
 }

@@ -1,9 +1,9 @@
 package com.example.labmedical.controller.mapper;
 
+import com.example.labmedical.enums.ExerciseType;
 import com.example.labmedical.exceptions.PatientNotFountException;
 import com.example.labmedical.repository.PacientRepository;
 import com.example.labmedical.repository.model.Pacient;
-import com.example.labmedical.repository.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,4 +42,16 @@ public class ExerciseMapperComponent {
         }
     }
 
+    String enumToString(ExerciseType exerciseType) {
+        return exerciseType.getValue();
+    }
+
+    ExerciseType stringToEnum(String exerciseType) {
+        for (ExerciseType type : ExerciseType.values()) {
+            if (type.getValue().equals(exerciseType)) {
+                return type;
+            }
+        }
+        return ExerciseType.OTHER;
+    }
 }

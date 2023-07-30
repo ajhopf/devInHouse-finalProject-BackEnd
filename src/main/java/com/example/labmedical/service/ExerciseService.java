@@ -25,6 +25,7 @@ public class ExerciseService {
     public ExerciseResponse registerExercise(ExerciseRequest exercise, User user) {
         Exercise ex = exerciseMapper.map(exercise);
         ex.setCreatedByUser(user);
+        ex.setStatus(true);
         exerciseRepository.save(ex);
         logger.success("O usuario " + user.getName() + " gerou um exercicio para o paciente " + ex.getPatient().getName());
         return exerciseMapper.map(ex);

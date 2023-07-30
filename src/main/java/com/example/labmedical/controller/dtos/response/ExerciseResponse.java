@@ -1,8 +1,5 @@
 package com.example.labmedical.controller.dtos.response;
 
-import com.example.labmedical.enums.ExerciseType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,10 +12,9 @@ public class ExerciseResponse {
     private String description;
     private LocalDate dateCreated;
     private LocalTime timeCreated;
-    @Enumerated(EnumType.STRING)
-    private ExerciseType exerciseType;
+    private String exerciseType;
     private Double timesPerWeek;
     private String exerciseSeriesName;
     private Long patientId;
-    private boolean status = true;
+    private boolean status;
 }

@@ -1,21 +1,17 @@
 package com.example.labmedical.controller.dtos.request;
 
-import com.example.labmedical.enums.ExerciseType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 @Builder
 public class ExerciseRequest {
     @NotBlank(message = "O campo 'Nome do Série de Exercícios' é obrigatório.")
     @Size(min = 5, max = 100, message = "O nome da série deve ter entre 5 e 100 caracteres.")
-    private String description;
+    private String exerciseSeriesName;
 
     @NotNull(message = "O campo 'Data' é obrigatório.")
     private LocalDate dateCreated;
@@ -25,19 +21,18 @@ public class ExerciseRequest {
     private String timeCreated;
 
     @NotNull(message = "O campo 'Tipo' é obrigatório.")
-    @Enumerated(EnumType.STRING)
-    private ExerciseType exerciseType;
+    private String exerciseType;
 
     @NotNull(message = "O campo 'Quantidade por Semana' é obrigatório.")
-    @DecimalMax(value = "99.99", inclusive = false, message = "O campo 'Quantidade por Semana' deve ter no máximo duas casas decimais.")
+    @DecimalMax(value = "99999999.99", inclusive = false, message = "O campo 'Quantidade por Semana' deve ter no máximo duas casas decimais.")
     private Double timesPerWeek;
 
     @NotBlank(message = "O campo 'Descrição' é obrigatório.")
     @Size(min = 10, max = 1000, message = "A descrição deve ter entre 10 e 1000 caracteres.")
-    private String exerciseSeriesName;
+    private String description;
 
     @NotNull(message = "Tem que informar o paciente")
     private Long patientId;
 
-    private boolean status = true;
+    private boolean status;
 }

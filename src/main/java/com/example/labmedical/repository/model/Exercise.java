@@ -34,10 +34,10 @@ public class Exercise {
     private LocalTime timeCreated;
     @NotBlank(message = "O campo 'Nome do Série de Exercícios' é obrigatório.")
     @Size(min = 5, max = 100, message = "O nome da série deve ter entre 5 e 100 caracteres.")
-    private String description;
+    private String exerciseSeriesName;
     @NotBlank(message = "O campo 'Descrição' é obrigatório.")
     @Size(min = 10, max = 1000, message = "A descrição deve ter entre 10 e 1000 caracteres.")
-    private String exerciseSeriesName;
+    private String description;
     private boolean status = true;
     @ManyToOne
     @JoinColumn(name = "user_id")

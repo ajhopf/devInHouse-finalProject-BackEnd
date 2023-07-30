@@ -153,7 +153,8 @@ class ExamServiceTest {
                     .thenReturn(Pacient.builder().build());
             Mockito.when(examRepository.getExamsByPacient_Id(Mockito.anyLong())).thenReturn(new ArrayList<>());
 
-            assertThrows(UserException.class, () -> examService.getExams(1L, null));
+            List<ExamResponse> response = examService.getExams(1l, null);
+            assertEquals(0, response.size());
         }
 
         @Test

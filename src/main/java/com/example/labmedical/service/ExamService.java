@@ -63,9 +63,6 @@ public class ExamService {
         if (pacientId != null) {
             pacientService.getPacientById(pacientId);
             examList = examRepository.getExamsByPacient_Id(pacientId);
-//            if (examList.size() == 0){
-//                throw new UserException("Não foi encotrado exame para este paciente");
-//            }
             logService.success(String.format("Busca de lista de exames do paciente %d realizada.", pacientId));
 
         } else if (pacientName != null) {

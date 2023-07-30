@@ -21,7 +21,6 @@ public interface PacientMapper {
 
     @Mapping(source = "address", target = "address")
     @Mapping(target = "role", expression = "java(mapRole())")
-    @Mapping(target = "isActive", expression = "java(mapIsActive())")
     Pacient map(PacientUpdateRequest source);
 
     PatientMedicalRecordResponse map(PacientResponse source);

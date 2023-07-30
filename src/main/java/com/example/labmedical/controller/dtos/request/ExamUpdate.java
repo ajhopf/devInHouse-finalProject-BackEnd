@@ -21,7 +21,7 @@ public class ExamUpdate {
     private String name;
     @NotNull(message = "É necessário inserir uma data para o exame.")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate date;
+    private LocalDate examDate;
     @NotNull(message = "É necessário inserir um horário.")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime time;

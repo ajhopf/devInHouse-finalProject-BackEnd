@@ -15,8 +15,7 @@ import java.time.LocalTime;
 public class ExamResponse {
     private Long id;
     private String name;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate date;
+    private LocalDate examDate;
     private LocalTime time;
     private String type;
     private String laboratory;

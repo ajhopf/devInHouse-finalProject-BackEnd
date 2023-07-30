@@ -13,7 +13,7 @@ public class SystemConfigRequest {
     @Size(min = 4, max = 20, message = "O nome da empresa tem que ter entre 4 e 20 caracteres.")
     private String companyName;
     @NotEmpty(message = "A logo não pode ser vazia")
-    @Pattern(regexp = "(https?|data):[^\\s/$.?#].[^\\s]*", message = "A logoUrl deve ser uma URL válida")
+    @URL(message = "A logoUrl deve ser uma URL válida")
     private String logoUrl;
     @NotEmpty(message = "A cor primaria não pode ser vazia")
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "A cor da fonte deve estar no formato hexadecimal")

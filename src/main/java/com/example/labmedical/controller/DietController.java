@@ -21,9 +21,9 @@ public class DietController {
     private DietService dietService;
     @GetMapping
     public ResponseEntity<List<DietResponse>> getDiets(
-            @RequestParam(required = false) String pacientName
+            @RequestParam(required = false) String pacient
     ) {
-        List<DietResponse> dietList = dietService.getDiets(pacientName);
+        List<DietResponse> dietList = dietService.getDiets(pacient);
 
         return ResponseEntity.ok(dietList);
     }

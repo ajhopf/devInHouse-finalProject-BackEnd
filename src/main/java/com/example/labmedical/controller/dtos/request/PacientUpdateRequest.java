@@ -46,4 +46,5 @@ public class PacientUpdateRequest {
     private LocalDate healthInsuranceExpirationDate;
     @NotNull
     private AddressRegisterRequest address;
+    private Boolean isActive;
 }

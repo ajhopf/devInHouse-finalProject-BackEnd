@@ -36,6 +36,5 @@ public class AppointmentRegisterRequest {
     private Boolean isActive;
     @NotNull
     private Long pacientId;
-    @NotNull
     private Long medicineId;
 }

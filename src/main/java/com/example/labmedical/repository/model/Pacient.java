@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.time.LocalDate;
 
@@ -51,6 +50,5 @@ public class Pacient {
     @Column(nullable = false)
     private Role role;
     @Column(nullable = false)
-    @ReadOnlyProperty
     private Boolean isActive;
 }

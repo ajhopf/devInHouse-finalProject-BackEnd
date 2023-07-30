@@ -1082,9 +1082,7 @@ Corpo:
 }
 
 Exemplo de resposta:
-
 Status: 200
-
 {
   "name": "Admin",
   "role": "ROLE_ADMIN",
@@ -1092,6 +1090,36 @@ Status: 200
   "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTA1ODE3MjEsImV4cCI6MTY5MTE4MTcyMX0.osFtYm5rwO7YoHdKeRIrlP1DwSg6qqNi4aTx_V8aH8c"
 }
 
+```
+
+```
+Descrição: Este endpoint serve para cadastrar um novo usuário.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/cadastrar
+Método HTTP: post
+Autenticado: sim
+Roles: ADMIN
+Corpo: 
+{
+   "email":"henrique@example.com",	
+   "name":"Henrique Dantas",
+   "password":"senha123",
+   "role" : "ROLE_ADMIN",
+   "cpf" :"0123.486.719-00",
+   "gender" :"Masculino",
+   "telephone" :"(11) 9 9999-9999"
+}
+
+Exemplo de resposta:
+{
+  "name": "Henrique Dantas",
+  "role": "ROLE_ADMIN",
+  "photoUrl": null,
+  "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2OTA1ODE3MjEsImV4cCI6MTY5MTE4MTcyMX0.osFtYm5rwO7YoHdKeRIrlP1DwSg6qqNi4aTx_V8aH8c"
+}
 ```
 
 ### Usuário
@@ -1115,7 +1143,6 @@ Corpo:
 Exemplo de resposta:
 
 Status: 200
-
 ```
 
 
@@ -1131,12 +1158,226 @@ Autenticado: Não
 Parametro: email do usuário
 
 Exemplo de resposta:
-
 Status: 200
 
 {
   "id": 1,
   "email": "string@email.com"
 }
+```
+```
+Descrição: Este endpoint serve para buscar todos os usuários.
 
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/listar
+Método HTTP: get
+Autenticado: sim
+Roles: ADMIN
+
+Exemplo de resposta:
+status: 200;
+{
+  [
+    {
+     "email":"henrique@example.com",	
+     "name":"Henrique Dantas",
+     "password":"senha123",
+     "role" : "ROLE_ADMIN",
+     "cpf" :"0123.486.719-00",
+     "gender" :"Masculino",
+     "telephone" :"(11) 9 9999-9999"
+    }
+  ]
+}
+```
+```
+Descrição: Este endpoint serve para atualizar dados do usuário.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/atualizar/{id}
+Método HTTP: put
+Autenticado: sim
+Roles: ADMIN
+Parametros: id do usuário
+Corpo:
+{
+  "email":"emailAtualizado@example.com",	
+  "name":"Henrique Dantas",
+  "password":"senha123",
+  "role" : "ROLE_ADMIN",
+  "cpf" :"0123.486.719-00",
+  "gender" :"Masculino",
+  "telephone" :"(11) 9 9999-9999"
+}
+
+Exemplo de resposta:
+status: 200
+Usuário atualizado com sucesso
+```
+```
+Descrição: Este endpoint serve para buscar usuário.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/buscar/{id}
+Método HTTP: get
+Autenticado: sim
+Roles: ADMIN
+Parametros: id do usuário
+
+Exemplo de resposta:
+status: 200
+{
+  "email":"henrique@example.com",	
+  "name":"Henrique Dantas",
+  "password":"senha123",
+  "role" : "ROLE_ADMIN",
+  "cpf" :"0123.486.719-00",
+  "gender" :"Masculino",
+  "telephone" :"(11) 9 9999-9999"
+}
+```
+```
+Descrição: Este endpoint serve para deletar usuário.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/usuarios/deletar/{id}
+Método HTTP: delete
+Autenticado: sim
+Roles: ADMIN
+Parametros: id do usuário
+
+Exemplo de resposta:
+status: 200
+Usuário removido com sucesso
+```
+### Exames
+
+```
+Descrição: Este endpoint serve para cadastrar um exame.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/exames/cadastrar
+Método HTTP: post
+Autenticado: sim
+Roles: ADMIN, DOCTOR  
+Corpo:
+  {
+    "name": "Creatinina"
+    "examDate": "25/07/2023"
+    "time": "09:30:00"
+    "type": "Laboratorial"
+    "laboratory": "LabMedical"
+    "documentUrl": null
+    "result": "níveis de creatinina dentro do normal"
+    "status": "ativo"
+    "pacientId": "1"
+  }
+  
+Exemplo de resposta:
+status: 201
+  {
+    "name": "Creatinina"
+    "examDate": "25/07/2023"
+    "time": "09:30:00"
+    "type": "Laboratorial"
+    "laboratory": "LabMedical"
+    "documentUrl": null
+    "result": "níveis de creatinina dentro do normal"
+    "status": "ativo"
+    "pacientId": "1"
+  }
+```
+
+```
+Descrição: Este endpoint serve para deletar um exame.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/exames/{id}
+Método HTTP: delete
+Autenticado: sim
+Roles: ADMIN, DOCTOR  
+Parametros: id do exame
+Exemplo de resposta:
+status: 202
+```
+
+```
+Descrição: Este endpoint serve para atualizar um exame.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/exames/atualizar/{id}
+Método HTTP: put
+Autenticado: sim
+Roles: ADMIN, DOCTOR  
+Parametros: id do exame
+Corpo:
+  {
+    "name": "Creatinina"
+    "examDate": "25/07/2023"
+    "time": "09:30:00"
+    "type": "Laboratorial"
+    "laboratory": "LabMedical"
+    "documentUrl": null
+    "result": "níveis de creatinina acima do esperado"
+    "status": "ativo"
+    "pacientId": "1"
+  }
+  
+Exemplo de resposta:
+status: 200
+  {
+    "name": "Creatinina"
+    "examDate": "25/07/2023"
+    "time": "09:30:00"
+    "type": "Laboratorial"
+    "laboratory": "LabMedical"
+    "documentUrl": null
+    "result": "níveis de creatinina acima do esperado"
+    "status": "ativo"
+    "pacientId": "1"
+  }
+```
+```
+Descrição: Este endpoint serve para buscar lista de exames do paciente.
+
+Autor: Jaime Nunes Leal
+
+Exemplo de requisição:
+URL: http://localhost:8080/api/exames/{id}
+Método HTTP: get
+Autenticado: sim
+Roles: ADMIN, DOCTOR  
+Parametros: id do paciente, nome do paciente
+
+Exemplo de resposta:
+status: 200
+{
+  [
+    {
+      "name": "Creatinina"
+      "examDate": "25/07/2023"
+      "time": "09:30:00"
+      "type": "Laboratorial"
+      "laboratory": "LabMedical"
+      "documentUrl": null
+      "result": "níveis de creatinina acima do esperado"
+      "status": "ativo"
+      "pacientId": "1"
+     }
+  ]
+}
 ```
